@@ -1,0 +1,45 @@
+content	avim	jar:chrome/avim.jar!/content/
+locale	avim	en	jar:chrome/avim.jar!/locale/en-US/
+locale	avim	de	jar:chrome/avim.jar!/locale/de/
+locale	avim	es	jar:chrome/avim.jar!/locale/es/
+locale	avim	nl	jar:chrome/avim.jar!/locale/nl/
+locale	avim	pt-BR	jar:chrome/avim.jar!/locale/pt-BR/
+locale	avim	vi	jar:chrome/avim.jar!/locale/vi/
+locale	avim	zh-CN	jar:chrome/avim.jar!/locale/zh-CN/
+skin	avim	classic/1.0	jar:chrome/avim.jar!/skin/classic/
+skin	avim	charamel	jar:chrome/avim.jar!/skin/charamel/
+skin	avim	silvermel	jar:chrome/avim.jar!/skin/charamel/
+style	chrome://avim/content/generalOverlay.xul	chrome://avim/content/skin/avim.css
+style	chrome://global/content/customizeToolbar.xul	chrome://avim/content/skin/avim.css
+style	chrome://mozapps/content/extensions/extensions.xul	chrome://avim/skin/options.css
+component	{ee7dd176-a684-4dc0-8613-62ddaef5378f}	components/avim.js
+component	{4A373444-8A2A-4641-ADD5-897A88D05185}	components/transformer.js
+contract	@1ec5.org/avim;1	{ee7dd176-a684-4dc0-8613-62ddaef5378f}
+contract	@1ec5.org/avim/transformer;1	{4A373444-8A2A-4641-ADD5-897A88D05185}
+category	profile-after-change	AVIM	@1ec5.org/avim;1
+overlay	chrome://avim/content/optionsOverlay.xul	chrome://browser/content/macBrowserOverlay.xul	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}	os=Darwin	appversion>=3.0a1pre
+overlay	chrome://avim/content/optionsOverlay.xul	chrome://browser/content/macBrowserOverlay.xul	application={a463f10c-3994-11da-9945-000d60ca027b}	os=Darwin
+style	chrome://avim/content/optionsOverlay.xul	chrome://browser/skin/preferences/preferences.css	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+style	chrome://avim/content/optionsOverlay.xul	chrome://browser/skin/preferences/preferences.css	application={a463f10c-3994-11da-9945-000d60ca027b}
+style	chrome://browser/content/browser.xul	chrome://avim/content/skin/avim.css
+overlay	chrome://browser/content/browser.xul	chrome://avim/content/generalOverlay.xul	appversion<4.0b7
+overlay	chrome://browser/content/browser.xul	chrome://avim/content/moz20Overlay.xul	appversion>=4.0b7
+overlay	chrome://browser/content/browser.xul	chrome://avim/content/moz18Overlay.xul	appversion<3.0a1pre
+override	chrome://avim/content/moz20Overlay.xul	chrome://avim/content/australisOverlay.xul	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}	appversion>=29.0a1
+overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
+overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/moz18Overlay.xul	appversion<3.0a1pre
+overlay	chrome://mozapps/content/extensions/extensions.xul	chrome://avim/content/addonsOverlay.xul	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+overlay	about:addons	chrome://avim/content/addonsOverlay.xul	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+overlay	chrome://messenger/content/messenger.xul	chrome://avim/content/moz20Overlay.xul	appversion>=17
+overlay	chrome://messenger/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
+overlay	chrome://browser/content/browser.xul	chrome://avim/content/fennecOverlay.xul	application={a23983c0-fd0e-11dc-95ff-0800200c9a66}	appversion>=1.0b4
+override	chrome://avim/content/options.xul	chrome://avim/content/fennecOptions.xul	application={a23983c0-fd0e-11dc-95ff-0800200c9a66}	appversion>=1.0b4
+style	chrome://navigator/content/navigator.xul	chrome://avim/content/skin/avim.css
+style	chrome://editor/content/editor.xul	chrome://avim/content/skin/avim.css
+override	chrome://avim/content/generalOverlay.xul	chrome://avim/content/navigatorOverlay.xul	application={92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}
+style	chrome://sunbird/content/calendar.xul	chrome://avim/content/skin/avim.css
+style	chrome://webrunner/content/webrunner.xul	chrome://avim/content/skin/avim.css
+style	chrome://komodo/content/komodo.xul	chrome://avim/content/skin/avim.css
+style	chrome://bluegriffon/content/xul/bluegriffon.xul	chrome://avim/content/skin/avim.css
+overlay	chrome://dta/content/preferences/prefs.xul	chrome://avim/content/generalOverlay.xul
+overlay	chrome://tabmixplus/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
