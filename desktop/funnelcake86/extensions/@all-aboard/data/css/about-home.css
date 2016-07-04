@@ -1,0 +1,40 @@
+.allaboard-snippet {
+    color: #3c3c3c;
+    margin: 12px auto;
+    font-size: .9rem;
+    width: 470px;
+    text-align: left;
+}
+
+.allaboard-snippet p:not(.mobile) {
+    padding-top: 8px;
+    font-size: .8rem;
+}
+
+.mobile {
+    font-size: .8rem;
+}
+
+.allaboard-snippet img:not(.mobile) {
+    height: 50px;
+    width: 50px;
+}
+
+.allaboard-snippet .button {
+    color: #fff;
+    cursor: pointer;
+    color: #0073aa;
+    text-decoration: underline;
+}
+
+.allaboard-snippet .button:active {
+    position: relative;
+    top: 1px;
+}
+
+.snippetImage {
+    float: left;
+    margin-right: 10px;
+    vertical-align: middle;
+    display: inline-block;
+}
