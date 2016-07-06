@@ -150,7 +150,7 @@ function startNotificationTimer(divideBy) {
     // schedule a new timer
     timer = timers.setTimeout(function() {
         showBadge();
-    }, waitInterval/divideBy);
+    }, waitInterval / divideBy);
 }
 
 /**
@@ -203,6 +203,7 @@ function showBadge() {
     allAboard.state('window', {
         badge: '1',
         badgeColor: '#5F9B0A',
+        label: '1 new notification',
         icon: {
             '16': './media/icons/icon-16_active.png',
             '32': './media/icons/icon-32_active.png',
@@ -330,8 +331,7 @@ function assignTokens(step, worker) {
         utils.store('lastSidebarLaunchTime', Date.now());
         // start notification timer
         startNotificationTimer(1);
-    }
-    else if (step === 5) {
+    } else if (step === 5) {
         startNotificationTimer(12);
     }
 }
@@ -389,7 +389,7 @@ function attachCommonSidebarListeners(worker) {
     });
 
     // listen for click events on the assigned tokens
-    worker.port.on('show', function(props) {
+    worker.port.on('loadSidebar', function(props) {
         // clear all timers in the timersArray
         clearTimers();
         onDemandSidebar(props);
@@ -463,7 +463,7 @@ function showRewardSidebar() {
         id: 'all-aboard-reward',
         title: 'Prize',
         url: './tmpl/reward.html',
-        onAttach: function(worker) {
+        onAttach: function() {
             // remove the previous 3 week destroy timer
             timers.clearInterval(destroyTimer);
             // start a new 3 week destroy timer
@@ -488,6 +488,9 @@ function showRewardSidebar() {
 
     content.show();
     setSidebarSize();
+
+    // initialize the about:home pageMod for the reward snippet
+    modifyAboutHome('reward');
 }
 
 /**
@@ -560,6 +563,9 @@ function showSidebar(sidebarProps) {
 
     content.show();
     setSidebarSize();
+
+    // initialize the about:home pageMod
+    modifyAboutHome(sidebarProps.track, sidebarProps.step);
 }
 
 /**
@@ -616,16 +622,13 @@ function toggleSidebar() {
         sidebarProps = getSidebarProps();
         // shows the relevant sidebar
         showSidebar(sidebarProps);
-        // initialize the about:home pageMod
-        modifyAboutHome(sidebarProps.track, sidebarProps.step);
     } else {
-        if (getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval && simpleStorage.step === 5) {
+        if (getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval
+            && simpleStorage.step === 5) {
             showRewardSidebar();
-        }
-        else
-        // 24 hours has not elapsed since the last content sidebar has been shown so,
-        // simply show or hide the current sidebar.
-        if (isVisible) {
+        } else if (isVisible) {
+            // 24 hours has not elapsed since the last content sidebar has been shown so,
+            // simply show or hide the current sidebar.
             content.hide();
         } else if (typeof sidebarProps !== 'undefined') {
             // We cannot just simply call .show(), because either the sidebar or
@@ -638,13 +641,11 @@ function toggleSidebar() {
             showSidebar(sidebarProps);
         }
     }
-
-
 }
 
 /**
  * Modifies the about:home page to show a snippet that matches the current sidebar.
- * @param {string} track - The current sidebar's track
+ * @param {string} track - The current sidebar's track or reward, for the reward step
  * @param {int} step - The current sidebar's content step
  */
 function modifyAboutHome(track, step) {
@@ -654,10 +655,23 @@ function modifyAboutHome(track, step) {
         contentScriptWhen: 'ready',
         contentStyleFile: './css/about-home.css',
         onAttach: function(worker) {
-            // constructs uri to snippet content
-            var contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
+            var contentURL;
+            var imageURL;
+            var snippetContent;
+            var imageBase = 'media/snippets/';
+
+            if (track === 'reward') {
+                contentURL = './tmpl/reward-snippet.html';
+                imageURL = imageBase + 'reward.png';
+            } else {
+                // constructs uri to snippet content
+                contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
+                imageURL = imageBase + sidebarProps.track + '/content' + sidebarProps.step + '.gif';
+            }
+
             // load snippet HTML
-            var snippetContent = self.data.load(contentURL).replace('%url', self.data.url('media/snippets/'+sidebarProps.track+'/content'+sidebarProps.step+'.gif'));
+            snippetContent = self.data.load(contentURL).replace('%url', self.data.url(imageURL));
+
             // emit modify event and passes snippet HTML as a string
             worker.port.emit('modify', snippetContent);
 
@@ -667,6 +681,9 @@ function modifyAboutHome(track, step) {
                 switch(intent) {
                     case 'bookmarks':
                         highLight('bookmarks');
+                        break;
+                    case 'claimPrize':
+                        showRewardSidebar();
                         break;
                     case 'customize':
                         highLight('customize');
@@ -972,13 +989,26 @@ exports.main = function(options) {
             addAddOnButton();
         }
 
-        // if init was called as part of a browser startup, we first need to check
-        // whether lastSidebarLaunchTime exists and if it does, check whether
+        // Check whether lastSidebarLaunchTime exists and if it does, check whether
         // more than 24 hours have elsapsed since the last time a sidebar was shown.
         if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
             && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
-            // if all of the above is true
-            showBadge();
+            // if all of the above is true, wait 60 seconds and then notify
+            timers.setTimeout(function() {
+                showBadge();
+            }, 60000);
+        }
+
+        // edge case time: If simpleStorage.step is undefined, it means the user has not seen
+        // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
+        // be undefined so, no need to check that. The user might however have answered the
+        // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
+        // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
+        // notification timer, and add the add-on button to the chrome.
+        if (typeof simpleStorage.step === 'undefined'
+            && typeof simpleStorage.isOnBoarding !== 'undefined') {
+            startNotificationTimer(1);
+            addAddOnButton();
         }
     }
 
