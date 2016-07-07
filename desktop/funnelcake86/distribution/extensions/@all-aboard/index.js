@@ -114,6 +114,7 @@ var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('lib/utils.js');
 var windowUtils = require('sdk/window/utils');
+var configPrefs = require("sdk/preferences/service")
 
 var { Cu } = require('chrome');
 var { XMLHttpRequest } = require('sdk/net/xhr');
@@ -149,6 +150,8 @@ var destroyTimer = -1;
 var waitInterval = 86400000;
 // 3 weeks in milliseconds
 var nonuseDestroyTime = 1814400000;
+var resetPreloadTime = 86400000;
+var resetPreloadTimer;
 
 try {
     Cu.import('resource:///modules/AutoMigrate.jsm');
@@ -231,6 +234,16 @@ function autoCloseTimer(timeout) {
 }
 
 /**
+ * Visibly hides the title of the current sidebar
+ * @param {object} activeWindow - The currently active window object
+ */
+function clearSidebarTitle(activeWindow) {
+    var sidebarTitle = activeWindow.document.getElementById('sidebar-title');
+    // hide visibly so the closing [x] does not float to the left
+    sidebarTitle.style.visibility = 'hidden';
+}
+
+/**
 * Utility function to set the desired size for the sidebar.
 */
 function setSidebarSize() {
@@ -238,6 +251,7 @@ function setSidebarSize() {
     var _sidebar = activeWindow.document.getElementById('sidebar');
     _sidebar.style.width = '320px';
     _sidebar.style.maxWidth = '320px';
+    clearSidebarTitle(activeWindow);
 }
 
 /**
@@ -916,6 +930,7 @@ function modifyNewtab() {
     aboutNewtab = pageMod.PageMod({
         include: /about:newtab/,
         contentScriptFile: './js/about-newtab.js',
+        contentScriptWhen: 'ready',
         contentStyleFile: './css/about-newtab.css',
         onAttach: function(worker) {
             // constructs uri to snippet content
@@ -948,7 +963,6 @@ function modifyNewtab() {
             // if we couldn't check if we can do the auto import because we weren't able to run the canUndo function, throw an error, and don't modify the newtab page with anything
             } catch(e) {
                 console.error('Not able to resolve autoimport undo promise.' + e);
-                worker.port.emit('modify', headerContent, footerContent);
             }
 
             worker.port.on('intent', function(intent) {
@@ -962,6 +976,12 @@ function modifyNewtab() {
                     default:
                         break;
                 }
+            });
+
+            // Listen for when our content script has modified our page
+            worker.port.on('pageModified', function() {
+                // Once the the page is modified, reset the preload preference if it hasn't been already
+                resetPreload();
             });
 
             // flag that we've shown the user their data
@@ -1039,6 +1059,16 @@ function destroy() {
     }
 }
 
+function resetPreload() {
+    // Check to see if the newtab is not being preloaded
+    // note: The binary that this addon will be packaged with will have browser.newtab.preload set to false. 
+    //       This is to mitigate the cache overriding our pagemod when users load newtab.
+    if(!configPrefs.get('browser.newtab.preload')) {
+        // if it isn't being preloaded, now that we've modified the page (loaded the content script), set it to preload in the future
+        configPrefs.set('browser.newtab.preload', true);
+    }
+}
+
 /** This is called when the add-on is unloaded. If the reason is either disable,
  * or shutdown, we can do some cleanup.
  */
@@ -1056,44 +1086,42 @@ exports.onUnload = function(reason) {
 * Initializes the add-on, and checks the time elapsed
 * since a sidebar was last shown.
 */
-exports.main = function(options) {
+exports.main = function() {
     // set's up the addon for dev mode.
     overrideDefaults();
 
-    if (options.loadReason === 'startup') {
-        // if the sidebar was open during Firefox shutdown, it will be shown by
-        // default when Firefox is started up again. The sidebar will not be
-        // sized appropriately though so, we call setSidebarSize
-        setSidebarSize();
+    // if the sidebar was open during Firefox shutdown, it will be shown by
+    // default when Firefox is started up again. The sidebar will not be
+    // sized appropriately though so, we call setSidebarSize
+    setSidebarSize();
 
-        // if the user has seen at least step 1, we need to add the ActionButton
-        // now, or else the code in the following conditional could try to show
-        // a notification to the user but, this will error because allAboard is undefined.
-        if (typeof simpleStorage.step !== 'undefined') {
-            addAddOnButton();
-        }
+    // if the user has seen at least step 1, we need to add the ActionButton
+    // now, or else the code in the following conditional could try to show
+    // a notification to the user but, this will error because allAboard is undefined.
+    if (typeof simpleStorage.step !== 'undefined') {
+        addAddOnButton();
+    }
 
-        // Check whether lastSidebarLaunchTime exists and if it does, check whether
-        // more than 24 hours have elsapsed since the last time a sidebar was shown.
-        if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
-            && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
-            // if all of the above is true, wait 60 seconds and then notify
-            timers.setTimeout(function() {
-                showBadge();
-            }, 60000);
-        }
+    // Check whether lastSidebarLaunchTime exists and if it does, check whether
+    // more than 24 hours have elsapsed since the last time a sidebar was shown.
+    if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
+        // if all of the above is true, wait 60 seconds and then notify
+        timers.setTimeout(function() {
+            showBadge();
+        }, 60000);
+    }
 
-        // edge case time: If simpleStorage.step is undefined, it means the user has not seen
-        // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
-        // be undefined so, no need to check that. The user might however have answered the
-        // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
-        // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
-        // notification timer, and add the add-on button to the chrome.
-        if (typeof simpleStorage.step === 'undefined'
-            && typeof simpleStorage.isOnBoarding !== 'undefined') {
-            startNotificationTimer(1);
-            addAddOnButton();
-        }
+    // edge case time: If simpleStorage.step is undefined, it means the user has not seen
+    // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
+    // be undefined so, no need to check that. The user might however have answered the
+    // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
+    // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
+    // notification timer, and add the add-on button to the chrome.
+    if (typeof simpleStorage.step === 'undefined'
+        && typeof simpleStorage.isOnBoarding !== 'undefined') {
+        startNotificationTimer(1);
+        addAddOnButton();
     }
 
     // do not call modifyFirstrun again if the user has either opted out or,
@@ -1108,4 +1136,9 @@ exports.main = function(options) {
     if(typeof simpleStorage.seenUserData === 'undefined') {
         modifyNewtab();
     }
+
+    var resetPreloadTimer = timers.setTimeout(function() {
+        // reset the preload preference
+        resetPreload();
+    }, resetPreloadTime);
 };
