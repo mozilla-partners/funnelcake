@@ -47,6 +47,63 @@ const CONTENT_STORE = {
     ]
 };
 
+const SNIPPET_COPY = {
+    utility: [
+        {
+            copy1: 'If searching makes you smarter and Firefox searches faster, then Firefox makes you smarter, faster.',
+            copy2: 'Win bets more quickly. Search faster.',
+            copy3: 'Free to search. More search options than the others.'
+        },
+        {
+            copy1: 'Your invisibility cloak awaits.',
+            copy2: 'Ditch the trackers.',
+            copy3: 'Free to be private. Only Firefox lets you turn off the trackers.'
+        },
+        {
+            copy1: 'We bet your other browser didn’t let you move icons around.',
+            copy2: 'Unlike the others, moving stuff around is one of our perks.',
+            copy3: 'Free to make it yours. Let’s put things where you want them.'
+        },
+        {
+            copy1: 'This is your browser. This is your browser on bookmarks. Any questions?',
+            copy2: 'Feeding Firefox makes it even more powerful. Import your bookmarks and witness true power.',
+            copy3: 'T-minus 10, 9, 8… the bookmark toolbar is your launch pad. Activate toolbar now.'
+        },
+        {
+            copy1: 'Join 100,000,000 people browsing freely on their phones.',
+            copy2: 'Voila! your tabs and history auto-magically appear on your phone.',
+            copy3: 'Leave no tab behind. Switch from laptop to phone and continue where you Webbed off.'
+        }
+    ],
+    values: [
+        {
+            copy1: 'Non-profit. Non-compromised. Less Filling.',
+            copy2: 'The Mozilla Foundation is the independent, non-profit organization behind Firefox.',
+            copy3: 'The Mozilla Foundation created Firefox to put some awesomesauce on the Web.'
+        },
+        {
+            copy1: 'Mozilla doesn’t just make Firefox. We also fight to set the Web free.',
+            copy2: 'Mozilla is on a mission to protect the Web.',
+            copy3: 'Help Mozilla stand up to corporate domination of the Web.'
+        },
+        {
+            copy1: 'Our private browsing mode is better than theirs.',
+            copy2: 'Mozilla believes your online life is your business.',
+            copy3: 'We believe the web is for browsing, not being browsed.'
+        },
+        {
+            copy1: 'Build your online safety net.',
+            copy2: 'Is your password a superhero?',
+            copy3: 'Online security doesn’t have to be a mystery.'
+        },
+        {
+            copy1: 'Be a Web know-it-all and do the Web some good.',
+            copy2: 'Now Playing: cyber security, government surveillance, the free Web.',
+            copy3: 'You’re different, that’s why we like you. Keep up with issues surrounding the Web.'
+        }
+    ]
+};
+
 var buttons = require('sdk/ui/button/action');
 var notifications = require('sdk/notifications');
 var pageMod = require('sdk/page-mod');
@@ -57,12 +114,6 @@ var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('lib/utils.js');
 var windowUtils = require('sdk/window/utils');
-// staging for automigrate to land
-//Cu.import("resource:///modules/AutoMigrate.jsm");
-//var canUndoPromise = AutoMigrate.canUndo();
-
-var syncPref = 'services.sync.account';
-var sync = require('sdk/preferences/service').get(syncPref);
 
 var { Cu } = require('chrome');
 var { XMLHttpRequest } = require('sdk/net/xhr');
@@ -98,6 +149,14 @@ var destroyTimer = -1;
 var waitInterval = 86400000;
 // 3 weeks in milliseconds
 var nonuseDestroyTime = 1814400000;
+
+try {
+    Cu.import('resource:///modules/AutoMigrate.jsm');
+    var canUndoPromise = AutoMigrate.canUndo();
+}
+catch (e) {
+    console.error('Unable to access automigrate.jsm' + e);
+}
 
 /**
 * Determines the number of hours that has elapsed since the last sidebar was shown.
@@ -341,15 +400,15 @@ function assignTokens(step, worker) {
  * @param {string} intent - The intent of the current event
  */
 function intentHandler(intent) {
-    switch(intent) {
+    switch (intent) {
         case 'search':
             showSearch();
             break;
         case 'smarton':
-            tabs.open('https://www.mozilla.org/teach/smarton/security/');
+            tabs.open('https://www.mozilla.org/teach/smarton/security/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=security');
             break;
         case 'newsletter':
-            tabs.open('https://www.mozilla.org/#newsletter-subscribe');
+            tabs.open('https://www.mozilla.org/newsletter/mozilla/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=community');
             break;
         case 'privateBrowsing':
             highLight('privateWindow');
@@ -523,20 +582,18 @@ function showSidebar(sidebarProps) {
                 // assign new token and notify sidebar as long as we haven't done so already
                 if(!assignedToken) {
                     assignTokens(sidebarProps.step, worker);
+                    // notify the sidebar that this is the first time the token
+                    // is being awarded so, show the success message.
+                    worker.port.emit('showTokenMsg');
+                    // start autoCloseTimer
                     autoCloseTimer(afterInteractionCloseTime);
                 }
             });
 
-            // for the mobile sidebar, utility - content5, we assign a token
-            // simply for opening the sidebar, no interaction required.
-            if (sidebarProps.track === 'utility' && sidebarProps.step === 5) {
-                assignTokens(sidebarProps.step, worker);
-            }
-
             // store the current step we are on
             utils.store('step', sidebarProps.step);
             // update the distribution id with the current step
-            utils.updatePref('-' + sidebarProps.step);
+            utils.updatePref(sidebarProps.step);
             // start the auto close timer
             autoCloseTimer(defaultSidebarCloseTime);
         },
@@ -611,6 +668,15 @@ function toggleSidebar() {
         }
     });
 
+    // if the user has clicked the add-on icon before having received the
+    // first notification, and now clicks it again because of the notification,
+    // do nothing but, set firstIconInteraction to false so that the flow
+    // from here on out will be as expected.
+    if (isVisible && simpleStorage.firstIconInteraction) {
+        simpleStorage.firstIconInteraction = false;
+        return;
+    }
+
     // Ensure that we have not already shown all content items, that at least 24
     // hours have elapsed since we've shown the last sidebar, and that the user has
     // completed the main CTA for the current step before continuing to increment
@@ -627,8 +693,8 @@ function toggleSidebar() {
             && simpleStorage.step === 5) {
             showRewardSidebar();
         } else if (isVisible) {
-            // 24 hours has not elapsed since the last content sidebar has been shown so,
-            // simply show or hide the current sidebar.
+            // we are not showing a new sidebar but, the current sidebar is open.
+            // Simply close it without disposing of the sidebar entirely.
             content.hide();
         } else if (typeof sidebarProps !== 'undefined') {
             // We cannot just simply call .show(), because either the sidebar or
@@ -636,11 +702,40 @@ function toggleSidebar() {
             // sidebar instance. Safest is to get a new instance.
             showSidebar(sidebarProps);
         } else {
+            // store a property to indicate that the very first sidebar has been
+            // triggered from the add-on icon. This will only ever happen once.
+            utils.store('firstIconInteraction', true);
             // this is the first time we are showing a content sidebar.
             sidebarProps = getSidebarProps();
             showSidebar(sidebarProps);
         }
     }
+}
+
+function replaceSnippetCopy(track, contentURL, imageURL) {
+    var snippetContent;
+    var copyNumber = Math.floor(Math.random() * 3) + 1;
+
+    switch(copyNumber) {
+        case 1:
+            // load snippet HTML
+            snippetContent = self.data.load(contentURL).replace('%url', self.data.url(imageURL)).replace('%snippetCopy', SNIPPET_COPY[track][sidebarProps.step - 1].copy1);
+            break;
+        case 2:
+            // load snippet HTML
+            snippetContent = self.data.load(contentURL).replace('%url', self.data.url(imageURL)).replace('%snippetCopy', SNIPPET_COPY[track][sidebarProps.step - 1].copy2);
+            break;
+        case 3:
+            // load snippet HTML
+            snippetContent = self.data.load(contentURL).replace('%url', self.data.url(imageURL)).replace('%snippetCopy', SNIPPET_COPY[track][sidebarProps.step - 1].copy3);
+            break;
+        default:
+            // load snippet HTML
+            snippetContent = self.data.load(contentURL).replace('%url', self.data.url(imageURL)).replace('%snippetCopy', SNIPPET_COPY[track][sidebarProps.step - 1]);
+            break;
+    }
+
+    return snippetContent;
 }
 
 /**
@@ -657,7 +752,6 @@ function modifyAboutHome(track, step) {
         onAttach: function(worker) {
             var contentURL;
             var imageURL;
-            var snippetContent;
             var imageBase = 'media/snippets/';
 
             if (track === 'reward') {
@@ -670,7 +764,7 @@ function modifyAboutHome(track, step) {
             }
 
             // load snippet HTML
-            snippetContent = self.data.load(contentURL).replace('%url', self.data.url(imageURL));
+            var snippetContent = replaceSnippetCopy(track, contentURL, imageURL);
 
             // emit modify event and passes snippet HTML as a string
             worker.port.emit('modify', snippetContent);
@@ -678,7 +772,7 @@ function modifyAboutHome(track, step) {
             // listens to an intent message and calls the relevant function
             // based on intent.
             worker.port.on('intent', function(intent) {
-                switch(intent) {
+                switch (intent) {
                     case 'bookmarks':
                         highLight('bookmarks');
                         break;
@@ -751,6 +845,7 @@ function modifyFirstrun() {
             worker.port.on('onboardingDismissed', function(dismissed) {
                 tabs.open('about:newtab');
                 utils.store('onboardingDismissed', dismissed);
+                utils.updatePref('-no-thanks');
                 // user has opted out of onboarding, destroy the addon
                 destroy();
             });
@@ -821,7 +916,6 @@ function modifyNewtab() {
     aboutNewtab = pageMod.PageMod({
         include: /about:newtab/,
         contentScriptFile: './js/about-newtab.js',
-        contentScriptWhen: 'ready',
         contentStyleFile: './css/about-newtab.css',
         onAttach: function(worker) {
             // constructs uri to snippet content
@@ -829,56 +923,46 @@ function modifyNewtab() {
             var footerContentURL = './tmpl/about-newtab-footer.html';
             // load snippet HTML
             var headerContent = self.data.load(headerContentURL).replace('%url', self.data.url('media/moving-truck.png'));
-            // don't load the footer if the user has a sync account
-            if (typeof sync !== 'undefined') {
-                footerContent = '';
-            }
-            // do load the footer if the user doesn't have a sync account
-            else {
-                var footerContent = self.data.load(footerContentURL);
-            }
+            var footerContent = self.data.load(footerContentURL);
 
-            // emit modify event and passes snippet HTML as a string
-            worker.port.emit('modify', headerContent, footerContent);
+            // try to check if we can undo the auto import
+            try {
+                canUndoPromise.then(canUndo => {
+                    // if we can't undo the auto import, don't send the footercontent to our sidebar
+                    if (!canUndo) {
+                        // emit modify event and passes snippet HTML as a string
+                        worker.port.emit('modify', headerContent, null);
+                    }
+                    // if we can undo the auto import, send the footercontent to our sidebar, and then listen for when we would like to actually execute the "undo"
+                    else {
+                        // emit modify event and passes snippet HTML as a string
+                        worker.port.emit('modify', headerContent, footerContent);
 
-           /* staging for autoimport code
-           canUndoPromise.then(canUndo => {
-                if (!canUndo) {
-                    // emit remove event for the footer if we aren't able to undo the import
-                    worker.port.emit('removeFooter');*/
-
-                    // listens to an intent message and calls the relevant function
-                    // based on intent.
-                    worker.port.on('intent', function(intent) {
-                        switch(intent) {
-                            case 'showAwesomebar':
-                                highLight('urlbar');
-                                break;
-                            case 'showBookmarks':
-                                showBookmarks();
-                                break;
-                            case 'undoMigrate':
-                                // staging for automigrate to land:
-                                //autoMigrate.undo();
-                                break;
-                            default:
-                                break;
-                        }
-                    });
-                /*}
-
-                // listens to an intent message and calls the relevant function
-                // based on intent.
-                worker.port.on('intent', function(intent) {
-                    switch(intent) {
-                        case 'undoMigrate':
-                            AutoMigrate.undo();
-                            break;
-                        default:
-                            break;
+                        worker.port.on('intent', function(intent) {
+                            if (intent === 'undoMigrate') {
+                                AutoMigrate.undo();
+                            }
+                        });
                     }
                 });
-            });*/
+            // if we couldn't check if we can do the auto import because we weren't able to run the canUndo function, throw an error, and don't modify the newtab page with anything
+            } catch(e) {
+                console.error('Not able to resolve autoimport undo promise.' + e);
+                worker.port.emit('modify', headerContent, footerContent);
+            }
+
+            worker.port.on('intent', function(intent) {
+                switch (intent) {
+                    case 'showAwesomebar':
+                        highLight('urlbar');
+                        break;
+                    case 'showBookmarks':
+                        showBookmarks();
+                        break;
+                    default:
+                        break;
+                }
+            });
 
             // flag that we've shown the user their data
             utils.store('seenUserData', true);
@@ -930,27 +1014,27 @@ function destroy() {
     timers.clearInterval(timer);
 
     // removes the button from the UI, and disables its further use
-    if(allAboard) {
+    if (allAboard) {
         allAboard.destroy();
     }
 
     // stops pagemod from making more modifications on abouthome in the future, and disables its further use
-    if(aboutHome) {
+    if (aboutHome) {
         aboutHome.destroy();
     }
 
     // stops pagemod from making more modifications on firstrun in the future, and disables its further use
-    if(firstRun) {
+    if (firstRun) {
         firstRun.destroy();
     }
 
     // stops pagemod from making more modifications on newtab in the future, and disables its further use
-    if(aboutNewtab) {
+    if (aboutNewtab) {
         aboutNewtab.destroy();
     }
 
     // destroys the addon sidebar, and disables its further use
-    if(content) {
+    if (content) {
         content.dispose();
     }
 }
