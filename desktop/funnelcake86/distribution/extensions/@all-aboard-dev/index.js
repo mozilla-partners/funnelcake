@@ -861,7 +861,7 @@ function modifyFirstrun() {
                 utils.store('onboardingDismissed', dismissed);
                 utils.updatePref('-no-thanks');
                 // user has opted out of onboarding, destroy the addon
-                destroy();
+                //destroy();
             });
 
             // listens for a message from pageMod when a user clicks on "No thanks"
@@ -1018,12 +1018,12 @@ function overrideDefaults() {
  * Starts the timer based upon the afterInteractionCloseTime to destroy the addon
  */
 function startDestroyTimer(destroyTime) {
-    destroyTimer = timers.setTimeout(function() {
+    /*destroyTimer = timers.setTimeout(function() {
         // clear any autoCloseTimer that may be scheduled
         clearTimers();
         // destroys the addon
         destroy();
-    }, destroyTime);
+    }, destroyTime);*/
 }
 
 /** This is called to explicitly 'uninstall' the addon, destroying functional
