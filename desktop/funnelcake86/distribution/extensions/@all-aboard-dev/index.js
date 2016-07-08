@@ -60,18 +60,18 @@ const SNIPPET_COPY = {
             copy3: 'Free to be private. Only Firefox lets you turn off the trackers.'
         },
         {
-            copy1: 'We bet your other browser didn’t let you move icons around.',
-            copy2: 'Unlike the others, moving stuff around is one of our perks.',
-            copy3: 'Free to make it yours. Let’s put things where you want them.'
+            copy1: 'Free to make it yours. Let’s put things where you want them.',
+            copy2: 'Moving stuff around is one of our perks.',
+            copy3: 'Let’s put things where you want them.'
         },
         {
             copy1: 'This is your browser. This is your browser on bookmarks. Any questions?',
-            copy2: 'Feeding Firefox makes it even more powerful. Import your bookmarks and witness true power.',
-            copy3: 'T-minus 10, 9, 8… the bookmark toolbar is your launch pad. Activate toolbar now.'
+            copy2: 'Feeding Firefox makes it even more powerful. Cook up some bookmarks and witness true power.',
+            copy3: 'T-minus 10, 9, 8… bookmarks are your launch pad.'
         },
         {
-            copy1: 'Join 100,000,000 people browsing freely on their phones.',
-            copy2: 'Voila! your tabs and history auto-magically appear on your phone.',
+            copy1: 'Join the millions browsing freely on their phones.',
+            copy2: 'Voila! Your tabs and history auto-magically appear on your phone.',
             copy3: 'Leave no tab behind. Switch from laptop to phone and continue where you Webbed off.'
         }
     ],
@@ -98,8 +98,8 @@ const SNIPPET_COPY = {
         },
         {
             copy1: 'Be a Web know-it-all and do the Web some good.',
-            copy2: 'Now Playing: cyber security, government surveillance, the free Web.',
-            copy3: 'You’re different, that’s why we like you. Keep up with issues surrounding the Web.'
+            copy2: 'Now Playing: cyber security and government surveillance.',
+            copy3: 'You’re different. That’s why we like you. Keep up with issues surrounding the Web.'
         }
     ]
 };
@@ -114,7 +114,7 @@ var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('lib/utils.js');
 var windowUtils = require('sdk/window/utils');
-var configPrefs = require("sdk/preferences/service")
+var configPrefs = require('sdk/preferences/service');
 
 var { Cu } = require('chrome');
 var { XMLHttpRequest } = require('sdk/net/xhr');
@@ -151,7 +151,6 @@ var waitInterval = 86400000;
 // 3 weeks in milliseconds
 var nonuseDestroyTime = 1814400000;
 var resetPreloadTime = 86400000;
-var resetPreloadTimer;
 
 try {
     Cu.import('resource:///modules/AutoMigrate.jsm');
@@ -180,7 +179,7 @@ function addAddOnButton() {
         // Create the action button, this will add the add-on to the chrome
         allAboard = buttons.ActionButton({
             id: 'all-aboard',
-            label: 'Mozilla Firefox Onboarding',
+            label: 'Firefox Notifications',
             icon: {
                 '16': './media/icons/icon-16.png',
                 '32': './media/icons/icon-32.png',
@@ -261,8 +260,8 @@ function setSidebarSize() {
 */
 function showDesktopNotification() {
     notifications.notify({
-        title: 'Welcome Aboard',
-        text: 'Firefox has something special for you.',
+        title: 'Firefox',
+        text: 'You have 1 new notification.',
         iconURL: './media/icons/icon-32_active.png',
         onClick: toggleSidebar
     });
@@ -276,7 +275,7 @@ function showBadge() {
     allAboard.state('window', {
         badge: '1',
         badgeColor: '#5F9B0A',
-        label: '1 new notification',
+        label: '1 new notification.',
         icon: {
             '16': './media/icons/icon-16_active.png',
             '32': './media/icons/icon-32_active.png',
@@ -392,7 +391,7 @@ function assignTokens(step, worker) {
     if (tokens.indexOf(token) === -1) {
         tokens.push(token);
         // store the new token
-        utils.store('tokens', tokens);
+        simpleStorage.tokens = tokens;
     }
     // emit the array of tokens to the sidebar
     worker.port.emit('tokens', tokens);
@@ -401,7 +400,7 @@ function assignTokens(step, worker) {
     // the final content item.
     if (step < 5) {
         // update the lastSidebarLaunchTime to now
-        utils.store('lastSidebarLaunchTime', Date.now());
+        simpleStorage.lastSidebarLaunchTime = Date.now();
         // start notification timer
         startNotificationTimer(1);
     } else if (step === 5) {
@@ -423,6 +422,15 @@ function intentHandler(intent) {
             break;
         case 'newsletter':
             tabs.open('https://www.mozilla.org/newsletter/mozilla/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=community');
+            break;
+        case 'exploreThemes':
+            tabs.open('https://addons.mozilla.org/firefox/themes/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1');
+            break;
+        case 'appleStore':
+            tabs.open('https://mzl.la/1YtDCxH');
+            break;
+        case 'playStore':
+            tabs.open('http://mzl.la/1HKLL5H');
             break;
         case 'privateBrowsing':
             highLight('privateWindow');
@@ -544,6 +552,9 @@ function showRewardSidebar() {
 
             // start the auto close timer
             autoCloseTimer(defaultSidebarCloseTime);
+
+            // set flag that the reward sidebar has been shown
+            simpleStorage.rewardSidebarShown = true;
         },
         onDetach: function() {
             content.dispose();
@@ -605,7 +616,7 @@ function showSidebar(sidebarProps) {
             });
 
             // store the current step we are on
-            utils.store('step', sidebarProps.step);
+            simpleStorage.step = sidebarProps.step;
             // update the distribution id with the current step
             utils.updatePref(sidebarProps.step);
             // start the auto close timer
@@ -644,16 +655,24 @@ function showSidebar(sidebarProps) {
  * @returns updated sidebarProps
  */
 function getSidebarProps() {
+    var tokens = simpleStorage.tokens || [];
+    var latestToken = 'token' + simpleStorage.step;
+
     var track = simpleStorage.whatMatters;
     // we get the properties before we increment the contentStep as arrays are 0 indexed.
     var sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
+    var contentStep;
     // determine the current content step we are on
-    var contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
+    if(tokens.indexOf(latestToken) > -1 && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval) {
+        contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
+    } else {
+        contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step) : 1;
+    }
     // reset our assigned token flag for the new sidebar
     assignedToken = false;
 
     // store the current step
-    utils.store('step', contentStep);
+    simpleStorage.step = contentStep;
 
     // set the additional sidebar properties
     sidebarProps.step = contentStep;
@@ -705,7 +724,12 @@ function toggleSidebar() {
     } else {
         if (getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval
             && simpleStorage.step === 5) {
-            showRewardSidebar();
+            if (isVisible) {
+                content.hide();
+            }
+            else {
+                showRewardSidebar();
+            }
         } else if (isVisible) {
             // we are not showing a new sidebar but, the current sidebar is open.
             // Simply close it without disposing of the sidebar entirely.
@@ -718,7 +742,7 @@ function toggleSidebar() {
         } else {
             // store a property to indicate that the very first sidebar has been
             // triggered from the add-on icon. This will only ever happen once.
-            utils.store('firstIconInteraction', true);
+            simpleStorage.firstIconInteraction = true;
             // this is the first time we are showing a content sidebar.
             sidebarProps = getSidebarProps();
             showSidebar(sidebarProps);
@@ -849,8 +873,8 @@ function modifyFirstrun() {
             }
 
             worker.port.on('dialogSubmit', function(choices) {
-                utils.store('isOnBoarding', choices.isOnBoarding);
-                utils.store('whatMatters', choices.whatMatters);
+                simpleStorage.isOnBoarding = choices.isOnBoarding;
+                simpleStorage.whatMatters = choices.whatMatters;
                 utils.updatePref('-' + choices.whatMatters + '-' + choices.isOnBoarding);
             });
 
@@ -858,10 +882,10 @@ function modifyFirstrun() {
             // before answering any of the questions
             worker.port.on('onboardingDismissed', function(dismissed) {
                 tabs.open('about:newtab');
-                utils.store('onboardingDismissed', dismissed);
+                simpleStorage.onboardingDismissed = dismissed;
                 utils.updatePref('-no-thanks');
                 // user has opted out of onboarding, destroy the addon
-                //destroy();
+                destroy();
             });
 
             // listens for a message from pageMod when a user clicks on "No thanks"
@@ -912,6 +936,20 @@ function modifyFirstrun() {
                     // either signed up/in or simply navigated away from the firstrun page.
                     if(typeof simpleStorage.step === 'undefined') {
                         addAddOnButton();
+
+                        var newtabOpen = false;
+                        for (let tab of tabs) {
+                            if(tab.url === 'about:newtab') {
+                                newtabOpen = true;
+                            }
+                        }
+
+                        if (!newtabOpen) {
+                            tabs.open({
+                                url: 'about:newtab',
+                                inBackground: true
+                            });
+                        }
                     }
 
                     // starts the timer that will call showBadge and queue up the next
@@ -985,7 +1023,7 @@ function modifyNewtab() {
             });
 
             // flag that we've shown the user their data
-            utils.store('seenUserData', true);
+            simpleStorage.seenUserData = true;
         }
     });
 }
@@ -1018,12 +1056,12 @@ function overrideDefaults() {
  * Starts the timer based upon the afterInteractionCloseTime to destroy the addon
  */
 function startDestroyTimer(destroyTime) {
-    /*destroyTimer = timers.setTimeout(function() {
+    destroyTimer = timers.setTimeout(function() {
         // clear any autoCloseTimer that may be scheduled
         clearTimers();
         // destroys the addon
         destroy();
-    }, destroyTime);*/
+    }, destroyTime);
 }
 
 /** This is called to explicitly 'uninstall' the addon, destroying functional
@@ -1061,24 +1099,26 @@ function destroy() {
 
 function resetPreload() {
     // Check to see if the newtab is not being preloaded
-    // note: The binary that this addon will be packaged with will have browser.newtab.preload set to false. 
-    //       This is to mitigate the cache overriding our pagemod when users load newtab.
+    // note: The binary that this addon will be packaged with will have browser.newtab.preload set
+    // to false. This is to mitigate the cache overriding our pagemod when users load newtab.
     if(!configPrefs.get('browser.newtab.preload')) {
-        // if it isn't being preloaded, now that we've modified the page (loaded the content script), set it to preload in the future
+        // if it isn't being preloaded, now that we've modified the page (loaded the content
+        // script), set it to preload in the future
         configPrefs.set('browser.newtab.preload', true);
     }
 }
 
-/** This is called when the add-on is unloaded. If the reason is either disable,
+/**
+ * This is called when the add-on is unloaded. If the reason is either disable,
  * or shutdown, we can do some cleanup.
  */
-exports.onUnload = function(reason) {
-    if (reason === 'disable' || reason === 'shutdown') {
+exports.onUnload = function() {
+    if (typeof aboutHome !== 'undefined') {
+        aboutHome.destroy();
+    }
 
-        if (typeof aboutHome !== 'undefined') {
-            aboutHome.destroy();
-        }
-
+    if (typeof content !== 'undefined') {
+        content.dispose();
     }
 };
 
@@ -1090,11 +1130,6 @@ exports.main = function() {
     // set's up the addon for dev mode.
     overrideDefaults();
 
-    // if the sidebar was open during Firefox shutdown, it will be shown by
-    // default when Firefox is started up again. The sidebar will not be
-    // sized appropriately though so, we call setSidebarSize
-    setSidebarSize();
-
     // if the user has seen at least step 1, we need to add the ActionButton
     // now, or else the code in the following conditional could try to show
     // a notification to the user but, this will error because allAboard is undefined.
@@ -1104,8 +1139,10 @@ exports.main = function() {
 
     // Check whether lastSidebarLaunchTime exists and if it does, check whether
     // more than 24 hours have elsapsed since the last time a sidebar was shown.
+    // Also, make sure that the user has not actually completed the on-boarding process.
     if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval
+        && typeof simpleStorage.rewardSidebarShown === 'undefined') {
         // if all of the above is true, wait 60 seconds and then notify
         timers.setTimeout(function() {
             showBadge();
@@ -1137,7 +1174,7 @@ exports.main = function() {
         modifyNewtab();
     }
 
-    var resetPreloadTimer = timers.setTimeout(function() {
+    timers.setTimeout(function() {
         // reset the preload preference
         resetPreload();
     }, resetPreloadTime);
