@@ -1,0 +1,8 @@
+.DS_Store
+.git
+circle.yml
+README.md
+node_modules/
+test/
+.gitignore
+.eslintrc.js

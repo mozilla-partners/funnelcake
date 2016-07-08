@@ -5,9 +5,9 @@
           <em:type>2</em:type>
           <em:bootstrap>true</em:bootstrap>
           <em:unpack>false</em:unpack>
-          <em:version>0.0.7</em:version>
+          <em:version>0.0.9</em:version>
           <em:name>All Aboard</em:name>
-          <em:description>The Mozilla Firefox onboarding add-on</em:description>
+          <em:description>The Mozilla Firefox Educational Tool</em:description>
           <em:creator>Mozilla Corporation</em:creator>
           <em:homepageURL>https://github.com/mozilla/all-aboard</em:homepageURL>
 
