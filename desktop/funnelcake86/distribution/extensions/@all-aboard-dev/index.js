@@ -71,7 +71,7 @@ const SNIPPET_COPY = {
         },
         {
             copy1: 'Join the millions browsing freely on their phones.',
-            copy2: 'Voila! Your tabs and history auto-magically appear on your phone.',
+            copy2: 'Voilà! Your tabs and history auto-magically appear on your phone.',
             copy3: 'Leave no tab behind. Switch from laptop to phone and continue where you Webbed off.'
         }
     ],
@@ -125,6 +125,8 @@ var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightTheme
 var activeWindow = windowUtils.getMostRecentBrowserWindow();
 // the awesomebar node from the browser window
 var awesomeBar = activeWindow.document.getElementById('urlbar');
+// the bookmark button node from the browser window
+var bookmarkButton = activeWindow.document.getElementById('bookmarks-menu-button');
 // whether we have assigned a token for our current content step
 var assignedToken = false;
 var aboutHome;
@@ -151,6 +153,9 @@ var waitInterval = 86400000;
 // 3 weeks in milliseconds
 var nonuseDestroyTime = 1814400000;
 var resetPreloadTime = 86400000;
+var aboutHomeReloaded = false;
+var awesomeBarListen = false;
+var bookmarkListen = false;
 
 try {
     Cu.import('resource:///modules/AutoMigrate.jsm');
@@ -322,7 +327,13 @@ function showBookmarks() {
  */
 function removeHighlight() {
     UITour.hideHighlight(activeWindow);
-    awesomeBar.removeEventListener('focus', removeHighlight);
+    if (awesomeBarListen) {
+        awesomeBar.removeEventListener('focus', removeHighlight);
+        awesomeBarListen = false;
+    } else if (bookmarkListen) {
+        bookmarkButton.removeEventListener('focus', removeHighlight);
+        bookmarkListen = false;
+    }
 }
 
 /**
@@ -330,8 +341,12 @@ function removeHighlight() {
  * @param {string} item - Item you wish to highlight's name as a string
  */
 function highLight(item) {
-    if (item === 'urlbar') {
+    if (item === 'urlbar' && !awesomeBarListen) {
         awesomeBar.addEventListener('focus', removeHighlight);
+        awesomeBarListen = true;
+    } else if (item === 'bookmarks' && !bookmarkListen) {
+        bookmarkButton.addEventListener('click', removeHighlight);
+        bookmarkListen = true;
     }
 
     UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
@@ -348,7 +363,7 @@ function highLight(item) {
  * @param {int} themeNum - a number passed based on the button clicked by the user
  */
 function changeTheme(themeNum) {
-    var personaIDs = [539838, 157076];
+    var personaIDs = [157076];
 
     // if there is no number passed, set the theme to default and return
     if (typeof themeNum === 'undefined') {
@@ -572,9 +587,6 @@ function showRewardSidebar() {
 
     content.show();
     setSidebarSize();
-
-    // initialize the about:home pageMod for the reward snippet
-    modifyAboutHome('reward');
 }
 
 /**
@@ -792,17 +804,19 @@ function modifyAboutHome(track, step) {
             var imageURL;
             var imageBase = 'media/snippets/';
 
+            var snippetContent;
             if (track === 'reward') {
                 contentURL = './tmpl/reward-snippet.html';
                 imageURL = imageBase + 'reward.png';
+                // load snippet HTML
+                snippetContent = self.data.load(contentURL).replace('%url', self.data.url(imageURL));
             } else {
                 // constructs uri to snippet content
                 contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
                 imageURL = imageBase + sidebarProps.track + '/content' + sidebarProps.step + '.gif';
+                // load snippet HTML
+                snippetContent = replaceSnippetCopy(track, contentURL, imageURL);
             }
-
-            // load snippet HTML
-            var snippetContent = replaceSnippetCopy(track, contentURL, imageURL);
 
             // emit modify event and passes snippet HTML as a string
             worker.port.emit('modify', snippetContent);
@@ -1135,7 +1149,30 @@ exports.main = function() {
     // a notification to the user but, this will error because allAboard is undefined.
     if (typeof simpleStorage.step !== 'undefined') {
         addAddOnButton();
+        sidebarProps = getSidebarProps();
+        modifyAboutHome(sidebarProps.track, sidebarProps.step);
+    } 
+    // edge case time: If simpleStorage.step is undefined, it means the user has not seen
+    // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
+    // be undefined so, no need to check that. The user might however have answered the
+    // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
+    // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
+    // notification timer, and add the add-on button to the chrome.
+    else if (typeof simpleStorage.isOnBoarding !== 'undefined') {
+        startNotificationTimer(1);
+        addAddOnButton();
+        sidebarProps = getSidebarProps();
+        modifyAboutHome(sidebarProps.track, sidebarProps.step);
     }
+
+    // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
+    // If so, we should refresh it so that our pagemod shows up
+    tabs.on('ready', function() {
+        if (tabs.activeTab.url === 'about:home' && !aboutHomeReloaded) {
+            aboutHomeReloaded = true;
+            tabs.activeTab.reload();
+        }
+    });
 
     // Check whether lastSidebarLaunchTime exists and if it does, check whether
     // more than 24 hours have elsapsed since the last time a sidebar was shown.
@@ -1147,18 +1184,6 @@ exports.main = function() {
         timers.setTimeout(function() {
             showBadge();
         }, 60000);
-    }
-
-    // edge case time: If simpleStorage.step is undefined, it means the user has not seen
-    // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
-    // be undefined so, no need to check that. The user might however have answered the
-    // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
-    // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
-    // notification timer, and add the add-on button to the chrome.
-    if (typeof simpleStorage.step === 'undefined'
-        && typeof simpleStorage.isOnBoarding !== 'undefined') {
-        startNotificationTimer(1);
-        addAddOnButton();
     }
 
     // do not call modifyFirstrun again if the user has either opted out or,
