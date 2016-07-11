@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 
 Name: install.rdf
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: zvRhCMivzs0bVdoxQxEMWQ==
-SHA1-Digest: RdFz47NKzmCHoUZizGSUZDEBrfk=
+MD5-Digest: jfTwSbVCTrzrUlMH/5g7fA==
+SHA1-Digest: 8rWS+/5e3xtfCklZ9VP8VrcwtnE=
 
 Name: .jpmignore
 Digest-Algorithms: MD5 SHA1
@@ -17,18 +17,18 @@ SHA1-Digest: hBvzrYsRacNpTOCOH+GOhYBn2mE=
 
 Name: config.json
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: a1VtRfpy8MrImRukFkUFTA==
-SHA1-Digest: LcQSnIo+EKDmtSh3d23qyIp8eJU=
+MD5-Digest: iOED5Wo7W0E3e/s8ZwQNtg==
+SHA1-Digest: QdRH+eAEXqUwAy7Pi7mGs5Ocj6g=
 
 Name: index.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: eWlH6SpyfRL1H7HRnRjH7Q==
-SHA1-Digest: qGd1x/cWzliZQeWd8HYXyYc9XoQ=
+MD5-Digest: JnA5BdLjmE+vWrIPDHPS3g==
+SHA1-Digest: /AO1r6UeqH/BNeXfeEfnGSUxKxc=
 
 Name: package.json
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: BjhajyDTggdeb3atXc2npQ==
-SHA1-Digest: tvWhChRMp/F+hYGchJ53MCfv78U=
+MD5-Digest: YvPeuab5CVUD4FxzApHSHQ==
+SHA1-Digest: MNqUMFrtMcnrS37vOddPTo5dq5I=
 
 Name: data/css/about-home.css
 Digest-Algorithms: MD5 SHA1
@@ -42,8 +42,8 @@ SHA1-Digest: IapKHW725OJhortqPP/WV89wypA=
 
 Name: data/css/all-aboard.css
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: VDmMuR1fpmUb8kR9KEoQ6g==
-SHA1-Digest: 6rWJyOGwM70NuLeh/lMVLJmiZpw=
+MD5-Digest: RGuPOhaHd/1rn8tMHspG8A==
+SHA1-Digest: nzS0n8nGDUT0VB/hmaSH+vukNUk=
 
 Name: data/css/firstrun.css
 Digest-Algorithms: MD5 SHA1
@@ -82,8 +82,8 @@ SHA1-Digest: 2ItnD6RsE2lBHhIlr3ozpyQQAis=
 
 Name: data/js/utility/content3.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: oNSYsLZZ8isvVqfvgn1cyQ==
-SHA1-Digest: a91Y3nj24Kf+0Vlw8x+KAsjDgPE=
+MD5-Digest: Jrgfo02hGrKKyZgrfHngPQ==
+SHA1-Digest: f79ZV3rt7/Sj6Bx9mbKlyWAvzLw=
 
 Name: data/js/utility/content4.js
 Digest-Algorithms: MD5 SHA1
@@ -357,8 +357,8 @@ SHA1-Digest: /45Ds7Sg2R/4yiB6UDtPDhUrSJs=
 
 Name: data/tmpl/reward.html
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: IPt9HzhIaIYyew1BXHktdA==
-SHA1-Digest: kThpSkysDzIBJ/ocP+Z8EjE7gDQ=
+MD5-Digest: X3cXZRmtdcfmyTuHBMCelA==
+SHA1-Digest: Xwt1hjx2eNEDAYZE51WqFUKPvEw=
 
 Name: data/tmpl/fragments/what-matters-option1.html
 Digest-Algorithms: MD5 SHA1
@@ -397,8 +397,8 @@ SHA1-Digest: YD9DTyjEx7t0RY63wxCQiLmnEdU=
 
 Name: data/tmpl/utility/content3.html
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: 1BfY9HKiuZ29ubpF4Lp6WA==
-SHA1-Digest: 3RDZQ+zjwCstLKlPPf0Ix0H00Bg=
+MD5-Digest: IOw0B7QNq0YnfSEZYX6P/A==
+SHA1-Digest: RKUliKpM5MC2++2axF9d6ErTKlI=
 
 Name: data/tmpl/utility/content4-snippet.html
 Digest-Algorithms: MD5 SHA1
@@ -417,8 +417,8 @@ SHA1-Digest: aOSIA6HRWGDAbwDaBOH2H38xg1c=
 
 Name: data/tmpl/utility/content5.html
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: EU41dZxqJtsCglZZ6WKwqQ==
-SHA1-Digest: A+8JxU49Zw+l1OclwjFO7FHZNss=
+MD5-Digest: 5d2wedIHWyX5LM1r7aL+MA==
+SHA1-Digest: oeX/o+qfL7U5xIK3jpT0HsfQfuY=
 
 Name: data/tmpl/values/content1-snippet.html
 Digest-Algorithms: MD5 SHA1
@@ -447,8 +447,8 @@ SHA1-Digest: zZbUtUgiOE9cEbZTHdeJ6t/G4Z8=
 
 Name: data/tmpl/values/content3.html
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: 0oDKVeWrMIZw7iAIEPzeyw==
-SHA1-Digest: WU6lykqOCX8RaoaFrjGJt7S0tL0=
+MD5-Digest: hZD9aDdM2w4+JF3eH910Yg==
+SHA1-Digest: aXms/8hkT9DC7/PsWZ2ULOZgZLY=
 
 Name: data/tmpl/values/content4-snippet.html
 Digest-Algorithms: MD5 SHA1
@@ -457,8 +457,8 @@ SHA1-Digest: /PhLh+bpGQjSjnI2XtPH6wcb9IU=
 
 Name: data/tmpl/values/content4.html
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: ggTsv+kBN6qbI+/1FKFL+w==
-SHA1-Digest: fhz/mjx9U8Z5j1jt8ybpGrH41uE=
+MD5-Digest: 3R9I/r/7Z9cKw8jyi+6smg==
+SHA1-Digest: EAPXGuXI/mF03KC7D05bZyhuaDc=
 
 Name: data/tmpl/values/content5-snippet.html
 Digest-Algorithms: MD5 SHA1
@@ -467,8 +467,8 @@ SHA1-Digest: 0PotBcozHpmXzYU0IGkzZ+W4Qmo=
 
 Name: data/tmpl/values/content5.html
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: +OCAl+Na5tdBr4MXEfucyA==
-SHA1-Digest: qGiux0vQGJnCFmZtBlyzyGRbSfk=
+MD5-Digest: Fh3HhxJ7KspMQbdfAG2DYA==
+SHA1-Digest: 5HIWJRpCIdeGmYvtUzO1VleFh6Q=
 
 Name: lib/utils.js
 Digest-Algorithms: MD5 SHA1

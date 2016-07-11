@@ -5,7 +5,7 @@
           <em:type>2</em:type>
           <em:bootstrap>true</em:bootstrap>
           <em:unpack>false</em:unpack>
-          <em:version>0.0.9</em:version>
+          <em:version>0.0.99</em:version>
           <em:name>All Aboard</em:name>
           <em:description>The Mozilla Firefox Educational Tool</em:description>
           <em:creator>Mozilla Corporation</em:creator>
