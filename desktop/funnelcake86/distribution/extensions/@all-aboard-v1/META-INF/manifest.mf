@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 
 Name: install.rdf
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: jfTwSbVCTrzrUlMH/5g7fA==
-SHA1-Digest: 8rWS+/5e3xtfCklZ9VP8VrcwtnE=
+MD5-Digest: 0xl7gT7ShQO+2Fq7PS7bsg==
+SHA1-Digest: Fu6gIQ2xMYrCRlnWBAOL3VDmg8Q=
 
 Name: .jpmignore
 Digest-Algorithms: MD5 SHA1
@@ -15,20 +15,15 @@ Digest-Algorithms: MD5 SHA1
 MD5-Digest: 7bXGjs354WXP08z1LJmaUQ==
 SHA1-Digest: hBvzrYsRacNpTOCOH+GOhYBn2mE=
 
-Name: config.json
-Digest-Algorithms: MD5 SHA1
-MD5-Digest: iOED5Wo7W0E3e/s8ZwQNtg==
-SHA1-Digest: QdRH+eAEXqUwAy7Pi7mGs5Ocj6g=
-
 Name: index.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: JnA5BdLjmE+vWrIPDHPS3g==
-SHA1-Digest: /AO1r6UeqH/BNeXfeEfnGSUxKxc=
+MD5-Digest: bOqjPysT7V2qft59PihI/A==
+SHA1-Digest: 07rkUCCQm71BG8QAonEm0G0I70A=
 
 Name: package.json
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: YvPeuab5CVUD4FxzApHSHQ==
-SHA1-Digest: MNqUMFrtMcnrS37vOddPTo5dq5I=
+MD5-Digest: XPOxKkuYOQ3PbFRpQHuAtg==
+SHA1-Digest: aOP4uMW/Pw6f0DrzvXeSJds1VRw=
 
 Name: data/css/about-home.css
 Digest-Algorithms: MD5 SHA1
