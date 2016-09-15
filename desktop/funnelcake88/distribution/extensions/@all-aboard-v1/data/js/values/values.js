@@ -4,6 +4,20 @@
     var button = mainContainer.querySelector('#show_answer');
     var options = mainContainer.querySelectorAll('input[type="radio"]');
     var secondaryContent = mainContainer.querySelector('#secondary_content');
+    var selfPacedContent = document.getElementById('selfpaced');
+    var nextButton;
+    var nextToken;
+
+    // if we're not on the final sidebar
+    if (parseInt(button.dataset.step, 10) < 5) {
+        // grab our next button and next token values
+        nextButton = document.getElementById('next-button');
+        nextToken = document.getElementById('token' + (parseInt(button.dataset.step, 10) + 1));
+
+        // and attach an event listener to the button
+        nextButton = attachNextButtonListener(nextButton);
+    }
+
 
     /**
      * Emits a cta_complete message to the add-on which will then assign
@@ -58,6 +72,11 @@
             prizeButton.addEventListener('click', function() {
                 addon.port.emit('intent', 'claimPrize');
             });
+        } else if (!nextToken.classList.contains('active')) {
+            // unhide our next button,
+            selfPacedContent.classList.remove('hidden');
+            // update aria state
+            selfPacedContent.setAttribute('aria-hidden', false);
         }
     }
 
@@ -76,5 +95,4 @@
             });
         }
     });
-
 })();
