@@ -4,5 +4,7 @@ circle.yml
 README.md
 node_modules/
 test/
+tests-functional/
 .gitignore
 .eslintrc.js
+*.xpi

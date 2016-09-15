@@ -1,13 +1,14 @@
 {
   "title": "All Aboard",
   "name": "all-aboard-v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The Mozilla Firefox Educational Tool",
   "homepage": "https://github.com/mozilla/all-aboard",
   "repository": "https://github.com/mozilla/all-aboard",
   "main": "index.js",
   "scripts": {
     "test": "jpm test",
+    "test-travis": "jpm --binary `which firefox` test -v",
     "build-xpi": "jpm xpi"
   },
   "author": "Mozilla Corporation",
