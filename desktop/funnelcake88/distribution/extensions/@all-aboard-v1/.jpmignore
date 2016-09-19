@@ -7,4 +7,3 @@ test/
 tests-functional/
 .gitignore
 .eslintrc.js
-*.xpi
