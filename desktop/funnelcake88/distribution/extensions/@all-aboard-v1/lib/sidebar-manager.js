@@ -381,7 +381,12 @@ exports.sidebarManager = {
             module.exports.sidebarManager.showSidebar(storageManager.get('sidebarProps'));
         } else {
             if (storageManager.get('step') === 'reward') {
-                module.exports.sidebarManager.showRewardSidebar();
+                if (storageManager.get('isSidebarVisible') === true) {
+                    module.exports.sidebarManager.content.hide();
+                }
+                else {
+                    module.exports.sidebarManager.showRewardSidebar();
+                }
             } else if (storageManager.get('isSidebarVisible') === true) {
                 // we are not showing a new sidebar but, the current sidebar is open.
                 // Simply close it without disposing of the sidebar entirely.

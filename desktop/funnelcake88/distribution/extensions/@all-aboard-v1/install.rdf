@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
     <Description about="urn:mozilla:install-manifest">
-          <em:id>@all-aboard-v1</em:id>
+          <em:id>@all-aboard-v1-2</em:id>
           <em:type>2</em:type>
           <em:bootstrap>true</em:bootstrap>
           <em:unpack>false</em:unpack>
-          <em:version>1.1.0</em:version>
+          <em:version>1.2.0</em:version>
           <em:name>All Aboard</em:name>
           <em:description>The Mozilla Firefox Educational Tool</em:description>
           <em:creator>Mozilla Corporation</em:creator>
