@@ -5,7 +5,7 @@
           <em:type>2</em:type>
           <em:bootstrap>true</em:bootstrap>
           <em:unpack>false</em:unpack>
-          <em:version>1.2.0</em:version>
+          <em:version>1.2.9-release</em:version>
           <em:name>All Aboard</em:name>
           <em:description>The Mozilla Firefox Educational Tool</em:description>
           <em:creator>Mozilla Corporation</em:creator>
@@ -14,15 +14,7 @@
           <em:targetApplication>
             <Description>
               <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-              <em:minVersion>38.0a1</em:minVersion>
-              <em:maxVersion>*</em:maxVersion>
-</Description>
-</em:targetApplication>
-
-          <em:targetApplication>
-            <Description>
-              <em:id>{aa3c5121-dab2-40e2-81ca-7ea25febc110}</em:id>
-              <em:minVersion>38.0a1</em:minVersion>
+              <em:minVersion>47.0</em:minVersion>
               <em:maxVersion>*</em:maxVersion>
 </Description>
 </em:targetApplication>

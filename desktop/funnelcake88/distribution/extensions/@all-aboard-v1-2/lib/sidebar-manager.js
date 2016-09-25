@@ -98,8 +98,6 @@ exports.sidebarManager = {
      */
     ctaComplete: function(isOnDemand, sidebarProps, worker) {
         if (isOnDemand) {
-            // start a new 3 week destroy timer
-            scheduler.startDestroyTimer(intervals.nonuseDestroyTime);
             // If ctaComplete is false, this is the first time the
             // CTA for this step is completed so, schedule the next
             // notification and assign the relevant token
@@ -148,12 +146,13 @@ exports.sidebarManager = {
      * Sets sidebar properties, step, track, url, and returns the result
      */
     setSidebarProps: function() {
-        var currentStep = storageManager.get('step');
-        var latestToken = 'token' + currentStep;
-        var sidebarProps = {};
-        var track = storageManager.get('whatMatters');
-        var tokens = storageManager.get('tokens') || [];
-        var contentStep;
+        let currentStep = storageManager.get('step');
+        let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
+        let latestToken = 'token' + currentStep;
+        let sidebarProps = {};
+        let track = storageManager.get('whatMatters');
+        let tokens = storageManager.get('tokens') || [];
+        let contentStep;
 
         if (currentStep === 5) {
             sidebarProps = module.exports.sidebarManager.sidebarKeys[track][4];
@@ -162,9 +161,14 @@ exports.sidebarManager = {
             tokensManager.assignedToken = false;
         }
 
-        // determine the current content step we are on
-        if (tokens.indexOf(latestToken) > -1 && utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime')) >= intervals.defaultSidebarInterval && currentStep !== 5) {
-            contentStep = typeof currentStep !== 'undefined' ? (currentStep + 1) : 1;
+        // this step's token has been assigned, it's been more than 24 hours since the
+        // last sidebar has been completed, we have seen at least 1 sidebar and, we are
+        // not on step 5 yet. Move forward by one step.
+        if (tokens.indexOf(latestToken) > -1
+            && utils.getTimeElapsed(lastCTACompleteTime) >= intervals.defaultSidebarInterval
+            && typeof currentStep !== 'undefined'
+            && currentStep !== 5) {
+            contentStep = parseInt(currentStep, 10) + 1;
         } else {
             contentStep = typeof currentStep !== 'undefined' ? currentStep : 1;
         }
@@ -240,10 +244,7 @@ exports.sidebarManager = {
             title: 'Prize',
             url: './tmpl/reward.html',
             onAttach: function() {
-                // start a new 3 week destroy timer
-                scheduler.startDestroyTimer(intervals.nonuseDestroyTime);
-                // start the auto close timer
-                scheduler.autoCloseTimer(intervals.defaultSidebarCloseTime);
+                scheduler.startSidebarTimers();
                 // set flag that the reward sidebar has been shown
                 storageManager.set('rewardSidebarShown', true);
             },
@@ -270,6 +271,7 @@ exports.sidebarManager = {
     */
     showSidebar: function(sidebarProps) {
         let isOnDemand = false;
+
         // if sidebarProps.url is undefined, this is an on demand sidebar.
         if (typeof sidebarProps.url === 'undefined') {
             sidebarProps = module.exports.sidebarManager.getOnDemandProps(sidebarProps);
@@ -317,16 +319,14 @@ exports.sidebarManager = {
                     module.exports.sidebarManager.showSidebar(props);
                 });
 
-                // store the current step we are on
-                storageManager.set('step', sidebarProps.step);
+                // start timers
+                scheduler.startSidebarTimers();
 
                 // The sidebar was shown via an interaction with the notification
                 // toaster, the add-on button or from a button on about:home
                 if (typeof sidebarProps.url !== 'undefined' || sidebarProps.aboutHome) {
                     // update the distribution id with the current step
                     utils.updatePref(sidebarProps.step);
-                    // start the auto close timer
-                    scheduler.autoCloseTimer(intervals.defaultSidebarCloseTime);
                 }
             },
             onDetach: function() {
@@ -360,14 +360,17 @@ exports.sidebarManager = {
     * Shows the next sidebar for the current track i.e. values or utility
     */
     toggleSidebar: function() {
-        // start a new 3 week destroy timer
-        scheduler.startDestroyTimer(intervals.nonuseDestroyTime);
+        let isSidebarVisible = storageManager.get('isSidebarVisible');
+        let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
+        let step = storageManager.get('step');
+        let sidebarProps = storageManager.get('sidebarProps');
+        let tokensArray = storageManager.get('tokens');
 
         // if the user has clicked the add-on icon before having received the
         // first notification, and now clicks it again because of the notification,
         // do nothing but, set firstIconInteraction to false so that the flow
         // from here on out will be as expected.
-        if (storageManager.get('isSidebarVisible') === true && storageManager.get('firstIconInteraction')) {
+        if (isSidebarVisible === true && storageManager.get('firstIconInteraction')) {
             storageManager.set('firstIconInteraction', false);
             return;
         }
@@ -375,33 +378,32 @@ exports.sidebarManager = {
         // Ensure that we have not already shown all content items, that at least 24
         // hours have elapsed since we've shown the last sidebar, and that the user has
         // completed the main CTA for the current step.
-        if (storageManager.get('step') !== 5 && typeof storageManager.get('tokens') !== 'undefined'
-            && utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime')) >= intervals.defaultSidebarInterval
-            && storageManager.get('tokens').indexOf('token' + storageManager.get('step')) > -1) {
-            module.exports.sidebarManager.showSidebar(storageManager.get('sidebarProps'));
+        if (step !== 5 && typeof tokensArray !== 'undefined'
+            && utils.getTimeElapsed(lastCTACompleteTime) >= intervals.defaultSidebarInterval
+            && tokensArray.indexOf('token' + step) > -1) {
+            module.exports.sidebarManager.showSidebar(sidebarProps);
         } else {
-            if (storageManager.get('step') === 'reward') {
+            if (step === 'reward') {
                 if (storageManager.get('isSidebarVisible') === true) {
                     module.exports.sidebarManager.content.hide();
-                }
-                else {
+                } else {
                     module.exports.sidebarManager.showRewardSidebar();
                 }
-            } else if (storageManager.get('isSidebarVisible') === true) {
+            } else if (typeof isSidebarVisible !== 'undefined' && isSidebarVisible === true) {
                 // we are not showing a new sidebar but, the current sidebar is open.
                 // Simply close it without disposing of the sidebar entirely.
                 module.exports.sidebarManager.content.hide();
-            } else if (typeof storageManager.get('sidebarProps') !== 'undefined') {
+            } else if (typeof sidebarProps !== 'undefined') {
                 // We cannot just simply call .show(), because either the sidebar or
                 // browser might have been closed which would have disposed of the
                 // sidebar instance. Safest is to get a new instance.
-                module.exports.sidebarManager.showSidebar(storageManager.get('sidebarProps'));
+                module.exports.sidebarManager.showSidebar(sidebarProps);
             } else {
                 // store a property to indicate that the very first sidebar has been
                 // triggered from the add-on icon. This will only ever happen once.
                 storageManager.set('firstIconInteraction', true);
                 // this is the first time we are showing a content sidebar.
-                this.showSidebar(storageManager.get('sidebarProps'));
+                this.showSidebar(sidebarProps);
             }
         }
     },

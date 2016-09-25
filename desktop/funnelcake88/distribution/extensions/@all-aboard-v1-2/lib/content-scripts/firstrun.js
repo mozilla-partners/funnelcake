@@ -6,7 +6,6 @@ var tabs = require('sdk/tabs');
 
 var { scheduler } = require('../scheduler.js');
 var { storageManager } = require('../storage-manager.js');
-var { toolbarButton } = require('../toolbar-button.js');
 var { utils, once } = require('../utils.js');
 
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\/.*/;
@@ -70,12 +69,6 @@ exports.firstrun = {
                     storageManager.set('isOnBoarding', choices.isOnBoarding);
                     storageManager.set('whatMatters', choices.whatMatters);
                     utils.updatePref('-' + choices.whatMatters + '-' + choices.isOnBoarding);
-
-                    // if we haven't gotten to our first step, the action button will not
-                    // exist, create and add it now before the first notification.
-                    if(typeof storageManager.get('step') === 'undefined') {
-                        toolbarButton.addAddOnButton();
-                    }
                     // starts the timer that will call showBadge and queue up the first sidebar
                     scheduler.startNotificationTimer(12);
                     // And store our onboarding initialization time so that we can set a new timer for the first notification if the user exits and restarts the session
@@ -114,7 +107,7 @@ exports.firstrun = {
                             if (firstrunRegex.test(tabs.activeTab.url)
                                 && typeof storageManager.get('onboardingDismissed') === 'undefined'
                                 && typeof storageManager.get('isOnBoarding') === 'undefined') {
-                                this.modifyFirstrun();
+                                module.exports.firstrun.modifyFirstrun();
                             }
                         });
                     }
@@ -132,8 +125,6 @@ exports.firstrun = {
                         // reached if the user clicked netiher of the "No thanks" links and,
                         // either signed up/in or simply navigated away from the firstrun page.
                         if(typeof storageManager.get('step') === 'undefined') {
-                            toolbarButton.addAddOnButton();
-
                             var newtabOpen = false;
                             for (let tab of tabs) {
                                 if(tab.url === 'about:newtab') {
