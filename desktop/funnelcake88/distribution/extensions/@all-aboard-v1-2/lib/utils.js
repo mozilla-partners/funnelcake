@@ -42,7 +42,7 @@ exports.utils = {
         // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
         // If so, we should refresh it so that our pagemod shows up
         try {
-            if (tabs.activeTab.url === 'about:home' && this.aboutHomeReloaded) {
+            if (tabs.activeTab.url === 'about:home' && !this.aboutHomeReloaded) {
                 this.aboutHomeReloaded = true;
                 tabs.activeTab.reload();
             }
@@ -93,6 +93,15 @@ exports.utils = {
      */
     destroy: function () {
         emit(exports, 'intent', 'destroy');
+    },
+    /**
+    * Determines the amount of time to wait before showing the next notification
+    * @param {int} timeSinceCTAComplete - Time in milliseconds since last sidebar interaction
+    * @returns The number of hours as milliseconds.
+    */
+    getRemainingWaitTime(timeSinceCTAComplete) {
+        return parseInt(intervals.timeElapsedFormula *
+            (intervals.defaultSidebarInterval - timeSinceCTAComplete));
     },
     /**
     * Determines the number of hours that has elapsed since the last sidebar was shown.

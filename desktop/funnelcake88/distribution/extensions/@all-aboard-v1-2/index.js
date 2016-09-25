@@ -5,7 +5,6 @@ var timers = require('sdk/timers');
 
 // All Aboard module imports
 var { intervals } = require('lib/intervals.js');
-var { notificationsManager } = require('lib/notification-manager.js');
 var { scheduler } = require('lib/scheduler.js');
 var { sidebarManager } = require('lib/sidebar-manager.js');
 var { storageManager } = require('lib/storage-manager.js');
@@ -19,11 +18,19 @@ var { newtab } = require('lib/content-scripts/newtab.js');
 var timer;
 
 /**
- * This is called when the add-on is unloaded. If the reason is either disable,
- * or shutdown, we can do some cleanup.
+ * This is called when the add-on is unloaded. If the reason is either uninstall,
+ *  disable or shutdown, we can do some cleanup.
  */
-exports.onUnload = function() {
-    utils.destroy();
+exports.onUnload = function(reason) {
+    if (reason === 'uninstall' || reason === 'disable') {
+        utils.destroy();
+    } else if (reason === 'shutdown') {
+        // if the user closes the browser while a sidebar
+        // is open, on restart, the add-on will still think
+        // that the sidebar is open so, we explicitly set it
+        // to false here.
+        storageManager.set('isSidebarVisible', false);
+    }
 };
 
 /**
@@ -34,9 +41,18 @@ exports.main = function() {
     // set's up the addon for dev mode.
     utils.overrideDefaults();
 
+    let isCTAComplete = storageManager.get('ctaComplete');
     let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
+    let rewardSidebarShown = storageManager.get('rewardSidebarShown');
+    let timeSinceCTAComplete = utils.getTimeElapsed(lastCTACompleteTime);
+    let lastStep = storageManager.get('step');
 
-    // Call modifyFirstrun if the user has not opted out or, have not already
+    // do not call modifynewtab if we've already modified it once
+    if (typeof storageManager.get('seenUserData') === 'undefined') {
+        newtab.modifyNewtab();
+    }
+
+    // Call modifyFirstrun if the user has not opted out and, have not already
     // answered the questions(as both questions need to be answered, checking
     // for the first one is enough).
     if (typeof storageManager.get('onboardingDismissed') === 'undefined'
@@ -44,17 +60,19 @@ exports.main = function() {
         firstrun.modifyFirstrun();
     }
 
+    // if the user has seen the first sidebar, always add the action button
+    // to the chrome on startup
+    if (typeof lastStep !== 'undefined') {
+        toolbarButton.addAddOnButton();
+    }
+
     // The user has not seen the first sidebar, and has not received the first notification but,
     // the user has completed firstrun, i.e. Closed the browser before the first notification
-    if (typeof storageManager.get('step') === 'undefined'
-        && typeof lastCTACompleteTime !== 'undefined'
+    if (typeof lastStep === 'undefined' && typeof lastCTACompleteTime !== 'undefined'
         && storageManager.get('shownNotification') === false) {
-
         let timeSinceLastCTAInteraction = Date.now() - lastCTACompleteTime;
-
-        // add the add-on ActionButton
-        toolbarButton.addAddOnButton();
-
+        // move the experience to step 1
+        sidebarManager.setSidebarProps();
         // it has been more than 2 hours since firstrun was completed.
         // Trigger the delayedNotification which will pop a notification
         // after a 60 second delay.
@@ -65,20 +83,42 @@ exports.main = function() {
             // reschedule the first sidebar notification for two hours from now.
             scheduler.startNotificationTimer(12);
         }
-    }
+    } else if (typeof lastStep !== 'undefined' && lastStep !== 'reward') {
+        // user has seen at least step 1, and we aren't at the reward sidebar
+        // clear any potential running timers, mainly in
+        // case exports.main is running due to an update
+        timers.clearTimeout(timer);
 
-    // if the user has seen at least step 1, and we aren't already to the reward sidebar
-    // OR if the user is onboarding and hasn't seen a step yet or they aren't to the 5th step,
-    // get the sidebar props for the current step, add the actionButton, and modify about:home
-    if ((typeof storageManager.get('step') !== 'undefined' && storageManager.get('step') < 5) ||
-        typeof storageManager.get('isOnBoarding') !== 'undefined' && storageManager.get('step') < 5) {
-        toolbarButton.addAddOnButton();
+        // the user has completed the CTA of the last displayed sidebar,
+        // before closing the browser.
+        if (typeof isCTAComplete !== 'undefined' && isCTAComplete) {
+            // less than 24hrs has passed since completion.
+            if (timeSinceCTAComplete < intervals.defaultSidebarInterval) {
+                // create a new timer with the time left in our timer
+                // that didn't persist between sessions
+                timer = timers.setTimeout(function() {
+                    toolbarButton.showBadge();
+                }, utils.getRemainingWaitTime(timeSinceCTAComplete));
+            } else if (timeSinceCTAComplete >= intervals.defaultSidebarInterval) {
+                // more than, or equal to 24hrs has passed since completion.
+                scheduler.delayedNotification();
+            }
+        } else if (typeof isCTAComplete === 'undefined' || !isCTAComplete) {
+            // the user saw the last sidebar before closing the
+            // browser but, did not interact with it.
+            scheduler.delayedNotification();
+        }
+
         sidebarManager.setSidebarProps();
         aboutHome.modifyAboutHome(storageManager.get('sidebarProps'));
-    // else, if we've reached the reward sidebar, just add the all-aboard button to the page
-    } else if (storageManager.get('step') >= 5) {
-        //add the addon button
-        toolbarButton.addAddOnButton();
+
+    } else if (lastStep === 'reward' && typeof rewardSidebarShown === 'undefined') {
+        // the user completed step 5 but, has not
+        // claimed their reward.
+        scheduler.delayedNotification();
+    }
+    else if (lastStep === 'reward') {
+        // if we've reached the reward sidebar, just modify about:home
         aboutHome.modifyAboutHome({
             track: 'reward'
         });
@@ -87,34 +127,4 @@ exports.main = function() {
     // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
     // If so, we should refresh it so that our pagemod shows up
     utils.reloadAboutHome();
-
-    // If more than 24 hours have elsapsed since the last time a sidebar was shown or there are less than
-    // 60 seconds left until 24 hours has elapased, AND we have not shown the reward sidebar yet, set a 60
-    // second timer to notify the user of their sidebar
-    if ((((utils.getTimeElapsed(storageManager.get(
-        'lastSidebarCTACompleteTime')) >= intervals.defaultSidebarInterval
-        || ((utils.timeElapsedFormula * (intervals.defaultSidebarInterval - (utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime'))))) < intervals.oneMinute))
-        && typeof storageManager.get('rewardSidebarShown') === 'undefined'))
-        && (!storageManager.get('shownNotification')))  {
-        // if all of the above is true, wait 60 seconds and then notify
-        scheduler.delayedNotification();
-
-    // If 24 hours hasn't yet elapsed and we haven't yet shown the reward sidebar, start a new timer as if
-    // the old timer never stopped counting
-    } else if ((utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime')) <
-        intervals.defaultSidebarInterval) && typeof storageManager.get('rewardSidebarShown') === 'undefined') {
-        // clear any potential open timers (there shouldn't be any persisting, but doing it anyway in case
-        // exports.main is running due to an update)
-        timers.clearTimeout(timer);
-        // create a new timer with the time left in our timer that didn't persist between sessions
-        timer = timers.setTimeout(function() {
-            notificationsManager.showBadge();
-        }, (utils.timeElapsedFormula * (intervals.defaultSidebarInterval -
-            (utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime'))))));
-    }
-
-    // do not call modifynewtab if we've already modified it once
-    if(typeof storageManager.get('seenUserData') === 'undefined') {
-        newtab.modifyNewtab();
-    }
 };
