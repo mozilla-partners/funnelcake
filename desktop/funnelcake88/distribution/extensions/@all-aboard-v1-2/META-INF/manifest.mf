@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 
 Name: install.rdf
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: SDb2t0eE96FBm12wOsagWA==
-SHA1-Digest: uHl0hvBww/PKNIN1OZ4FA6s/i1g=
+MD5-Digest: c++ewuUDqt8XiN3w489grA==
+SHA1-Digest: wCv1UaOEWN4G3zVW123t3NkBU1k=
 
 Name: .jpmignore
 Digest-Algorithms: MD5 SHA1
@@ -22,13 +22,13 @@ SHA1-Digest: hBvzrYsRacNpTOCOH+GOhYBn2mE=
 
 Name: index.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: 1mn4QJkbM0DwwaKAizaskA==
-SHA1-Digest: UeuJAWPWBLEwUzigJ4JPOqb1FUo=
+MD5-Digest: 4kxgJn04DM+pvE2zgLnItw==
+SHA1-Digest: 7SIzosrIIIN6aKTVJE01bjwA0ps=
 
 Name: package.json
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: Ewn6PdykPk3GFwNdS489XA==
-SHA1-Digest: qNcfRmbHfhOGu8c9kyM1D2um4jQ=
+MD5-Digest: cLujl+TncWR5kinXIKn13w==
+SHA1-Digest: IxWmKWtjfevIcqZRIcwD0bFZDgM=
 
 Name: data/css/about-home.css
 Digest-Algorithms: MD5 SHA1
@@ -477,8 +477,8 @@ SHA1-Digest: 1+EOVE9c1/xLGvaSXH21pStPwME=
 
 Name: lib/scheduler.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: +SoHD5jxZnc2bwaYCJVPBA==
-SHA1-Digest: qzxNv50dXB9XJd2PYGK8ecwEc+Y=
+MD5-Digest: wSbN2Po9uOMg4cyZ6xOgfQ==
+SHA1-Digest: zbU74bYxvSu+RN4itiVKVkGWxe4=
 
 Name: lib/sidebar-events.js
 Digest-Algorithms: MD5 SHA1
@@ -487,8 +487,8 @@ SHA1-Digest: rkwyo3mn1UpSvRVrgkdlKV34bhs=
 
 Name: lib/sidebar-manager.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: CP5vjwRCoUoA8A2JaDLHwQ==
-SHA1-Digest: ktSrkqUnM4eFpMQwvy9j/0ob48Q=
+MD5-Digest: Rf34KWrG0GIV5eYLbz5DrA==
+SHA1-Digest: dXarohWqeXXSeMRjiyXlOV7+kPs=
 
 Name: lib/sidebar-utils.js
 Digest-Algorithms: MD5 SHA1
@@ -512,8 +512,8 @@ SHA1-Digest: SAgfo01nC0670Fdfe6My6EJpwfk=
 
 Name: lib/utils.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: R7aGsYQNK1t+nDUIK83CdA==
-SHA1-Digest: J812ehzEO7OfW3DZuPOL+lWlU8g=
+MD5-Digest: T9RLA7V7ZFDOuJ3djWn3mg==
+SHA1-Digest: BeDV1dZKg3tauteVbDKeopfgAjc=
 
 Name: lib/content-scripts/about-home.js
 Digest-Algorithms: MD5 SHA1

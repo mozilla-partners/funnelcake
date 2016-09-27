@@ -95,6 +95,18 @@ exports.utils = {
         emit(exports, 'intent', 'destroy');
     },
     /**
+     * Determines the number of milliseconds left until the destroy function should be called.
+     * @param {string} destroyTimerStartTime - Time in milliseconds read from storage
+     * @returns The number of milliseconds as an int
+     */
+    getRemainingTTL: function(destroyTimerStartTime) {
+        let timeElapsed = Date.now() - destroyTimerStartTime;
+        let timeRemaining = parseInt(intervals.nonuseDestroyTime - timeElapsed, 10);
+        // if the remaining time is not more than zero, return 1000 milliseconds.
+        // this will also avoid any possible negative values being returned.
+        return timeRemaining > 0 ? timeRemaining : 1000;
+    },
+    /**
     * Determines the amount of time to wait before showing the next notification
     * @param {int} timeSinceCTAComplete - Time in milliseconds since last sidebar interaction
     * @returns The number of hours as milliseconds.
