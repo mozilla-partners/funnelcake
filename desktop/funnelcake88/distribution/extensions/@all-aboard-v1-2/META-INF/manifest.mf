@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 
 Name: install.rdf
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: c++ewuUDqt8XiN3w489grA==
-SHA1-Digest: wCv1UaOEWN4G3zVW123t3NkBU1k=
+MD5-Digest: ZDhyDuOceW8n4y7ESlKgPw==
+SHA1-Digest: wcPYufX2RywH5+OkCwyCYmUq/2w=
 
 Name: .jpmignore
 Digest-Algorithms: MD5 SHA1
@@ -27,8 +27,8 @@ SHA1-Digest: 7SIzosrIIIN6aKTVJE01bjwA0ps=
 
 Name: package.json
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: cLujl+TncWR5kinXIKn13w==
-SHA1-Digest: IxWmKWtjfevIcqZRIcwD0bFZDgM=
+MD5-Digest: weGCGxMdRaZYC3C0IF2smg==
+SHA1-Digest: 9E+dbdUZ9Lhx9VtxGDaPuUyjmvM=
 
 Name: data/css/about-home.css
 Digest-Algorithms: MD5 SHA1
@@ -477,8 +477,8 @@ SHA1-Digest: 1+EOVE9c1/xLGvaSXH21pStPwME=
 
 Name: lib/scheduler.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: wSbN2Po9uOMg4cyZ6xOgfQ==
-SHA1-Digest: zbU74bYxvSu+RN4itiVKVkGWxe4=
+MD5-Digest: rqVg82BtVoyH84L5rO/1UA==
+SHA1-Digest: oUWz3XRgIVsiOciEV6odDJYFekE=
 
 Name: lib/sidebar-events.js
 Digest-Algorithms: MD5 SHA1
@@ -487,8 +487,8 @@ SHA1-Digest: rkwyo3mn1UpSvRVrgkdlKV34bhs=
 
 Name: lib/sidebar-manager.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: Rf34KWrG0GIV5eYLbz5DrA==
-SHA1-Digest: dXarohWqeXXSeMRjiyXlOV7+kPs=
+MD5-Digest: x4OpFByu+/+EshkI70lp2w==
+SHA1-Digest: M4IzmTdayh29F0IOdhcG3nN+9UI=
 
 Name: lib/sidebar-utils.js
 Digest-Algorithms: MD5 SHA1
@@ -512,23 +512,23 @@ SHA1-Digest: SAgfo01nC0670Fdfe6My6EJpwfk=
 
 Name: lib/utils.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: T9RLA7V7ZFDOuJ3djWn3mg==
-SHA1-Digest: BeDV1dZKg3tauteVbDKeopfgAjc=
+MD5-Digest: jpgkqTbKUBjl1v0vGXIhUw==
+SHA1-Digest: gEXOM3ClBDLWPSIPddvHbrbjOJE=
 
 Name: lib/content-scripts/about-home.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: 8LnpCSNDLaKVEF7czF0Pbg==
-SHA1-Digest: wT1MLGtT6yYQVgoAiXO/lYEjooQ=
+MD5-Digest: FFFhtSw88/TXgmskm6Trmw==
+SHA1-Digest: jAC+9CCy1fbgP7PbDuTAJ2nycVM=
 
 Name: lib/content-scripts/firstrun.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: ReocED5NRwPIusOkdtES3w==
-SHA1-Digest: 1wKP/Ag9FJELippbdCDl+L/uh5w=
+MD5-Digest: PuuZIijWF1BdNP8X9hldAQ==
+SHA1-Digest: Ih8ZqWWcYc/9/AW9Zs/Xhb9gZKs=
 
 Name: lib/content-scripts/newtab.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: AcLhsDRv+9I4EdX33qxEhQ==
-SHA1-Digest: Rg1UnHc3eXanEC9a3XA6EjLVjsM=
+MD5-Digest: 4iV04vby4tzYCjaHIoCq8g==
+SHA1-Digest: yYrtLf6KgaICmzBw/JrSBoHUdl4=
 
 Name: lib/content-scripts/snippets.js
 Digest-Algorithms: MD5 SHA1
