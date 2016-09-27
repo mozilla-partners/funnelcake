@@ -41,6 +41,7 @@ exports.main = function() {
     // set's up the addon for dev mode.
     utils.overrideDefaults();
 
+    let destroyTimerStartTime = storageManager.get('destroyTimerStartTime');
     let isCTAComplete = storageManager.get('ctaComplete');
     let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
     let rewardSidebarShown = storageManager.get('rewardSidebarShown');
@@ -66,6 +67,12 @@ exports.main = function() {
         toolbarButton.addAddOnButton();
     }
 
+    // if destroyTimerStartTime is not undefined, we did start a destroy timer,
+    // we therefore need to restart it for the time that remains
+    if (typeof destroyTimerStartTime !== 'undefined') {
+        scheduler.restartDestroyTimer(utils.getRemainingTTL(destroyTimerStartTime));
+    }
+
     // The user has not seen the first sidebar, and has not received the first notification but,
     // the user has completed firstrun, i.e. Closed the browser before the first notification
     if (typeof lastStep === 'undefined' && typeof lastCTACompleteTime !== 'undefined'
@@ -74,10 +81,10 @@ exports.main = function() {
         // move the experience to step 1
         sidebarManager.setSidebarProps();
         // it has been more than 2 hours since firstrun was completed.
-        // Trigger the delayedNotification which will pop a notification
+        // Trigger the conditionalDelayedNotification which will pop a notification
         // after a 60 second delay.
         if (timeSinceLastCTAInteraction > intervals.waitInterval / 12) {
-            scheduler.delayedNotification();
+            scheduler.conditionalDelayedNotification();
         } else {
             // it has been less then two hours between restarts so, simply
             // reschedule the first sidebar notification for two hours from now.
@@ -101,12 +108,13 @@ exports.main = function() {
                 }, utils.getRemainingWaitTime(timeSinceCTAComplete));
             } else if (timeSinceCTAComplete >= intervals.defaultSidebarInterval) {
                 // more than, or equal to 24hrs has passed since completion.
-                scheduler.delayedNotification();
+                scheduler.conditionalDelayedNotification();
             }
-        } else if (typeof isCTAComplete === 'undefined' || !isCTAComplete) {
-            // the user saw the last sidebar before closing the
-            // browser but, did not interact with it.
-            scheduler.delayedNotification();
+        } else if ((typeof isCTAComplete === 'undefined' || !isCTAComplete)
+            && timeSinceCTAComplete >= intervals.defaultSidebarInterval) {
+            // cta has not been completed and it has been 24 hours or more since
+            // lastCTA complete, notify
+            scheduler.conditionalDelayedNotification();
         }
 
         sidebarManager.setSidebarProps();
@@ -115,7 +123,7 @@ exports.main = function() {
     } else if (lastStep === 'reward' && typeof rewardSidebarShown === 'undefined') {
         // the user completed step 5 but, has not
         // claimed their reward.
-        scheduler.delayedNotification();
+        scheduler.conditionalDelayedNotification();
     }
     else if (lastStep === 'reward') {
         // if we've reached the reward sidebar, just modify about:home

@@ -50,12 +50,62 @@ exports.scheduler = {
         }
     },
     /**
+     * Calls the delayedNotification only if the user has not seen 3
+     * notifications already. Only called on browser startup
+     */
+    conditionalDelayedNotification: function() {
+        let notificationsStatus = storageManager.get('notificationsStatus');
+
+        // if the user did not see any notifications before closing their
+        // browser, initialize the notificationsStatus count to zero.
+        if (typeof notificationsStatus === 'undefined') {
+            module.exports.scheduler.setNotificationCount(1);
+            notificationsStatus = storageManager.get('notificationsStatus');
+        }
+
+        // the user has seen less than or equal to 2 notifications
+        if (notificationsStatus.count <= 2) {
+            module.exports.scheduler.delayedNotification();
+            // update the number of notifications
+            module.exports.scheduler.setNotificationStatus(notificationsStatus);
+        } else if (notificationsStatus.count === 3) {
+            // this is the third notification.
+            module.exports.scheduler.delayedNotification();
+            // explcitly set notification count to 4. This ensures that
+            // there will not be any more notifications on startup, unless
+            // the user completes the CTA
+            module.exports.scheduler.setNotificationCount(4);
+        }
+    },
+    /**
      * Calls toolbarButton.showBadge() after a 60 second delay.
      */
-    delayedNotification() {
+    delayedNotification: function() {
         timers.setTimeout(function() {
             toolbarButton.showBadge();
         }, intervals.oneMinute);
+    },
+    /**
+     * Clears all timers and then calls destroy in utils to "uninstall" the add-on
+    */
+    destroyAddOn: function() {
+        // clear any autoCloseTimer that may be scheduled
+        module.exports.scheduler.clearTimers();
+        // clear any scheduled notifications
+        module.exports.scheduler.clearNotificationTimer();
+        // destroys the addon
+        utils.destroy();
+    },
+    /**
+     * Restarts the destroy timer for the amount of time that remain until
+     * the add-on should be detroyed.
+     * @param {int} interval - The time to ait for calling destroyAddOn in milliseconds
+     */
+    restartDestroyTimer: function(interval) {
+        // schedule a new destroy timer
+        destroyTimer = timers.setTimeout(function() {
+            module.exports.scheduler.destroyAddOn();
+        }, interval);
     },
     /**
      * Starts the timer based upon the afterInteractionCloseTime to destroy the addon
@@ -63,14 +113,12 @@ exports.scheduler = {
     startDestroyTimer: function() {
         // clear any previously scheduled destroyTimer
         timers.clearTimeout(destroyTimer);
+        // store the time when we scheduled the timer. This
+        // will be used to restart the timer on startup.
+        storageManager.set('destroyTimerStartTime', Date.now());
         // schedule a new destroy timer
         destroyTimer = timers.setTimeout(function() {
-            // clear any autoCloseTimer that may be scheduled
-            module.exports.scheduler.clearTimers();
-            // clear any scheduled notifications
-            module.exports.scheduler.clearNotificationTimer();
-            // destroys the addon
-            utils.destroy();
+            module.exports.scheduler.destroyAddOn();
         }, intervals.nonuseDestroyTime);
     },
     /**
@@ -90,6 +138,8 @@ exports.scheduler = {
 
         // clear any currently scheduled notification timer
         module.exports.scheduler.clearNotificationTimer();
+        // as we just completed the CTA, reset the notifications count
+        module.exports.scheduler.resetNotificationStatus();
 
         // only schedule a timer if we have not
         // reached the final content item.
@@ -118,6 +168,25 @@ exports.scheduler = {
         }
     },
     /**
+     * Resets the notificationsStatus
+     */
+    resetNotificationStatus: function() {
+        storageManager.set('notificationsStatus', {
+            notificationTime: Date.now(),
+            count: 1
+        });
+    },
+    /**
+     * Sets the notification status count to the specified count
+     * @param {int} count - The new notification count value
+     */
+    setNotificationCount: function(count) {
+        storageManager.set('notificationsStatus', {
+            notificationTime: Date.now(),
+            count: count
+        });
+    },
+    /**
      * Set or update the notification status object
      * @param {object} notificationsStatus - The current notificationsStatus
      */
@@ -129,11 +198,8 @@ exports.scheduler = {
         if (notificationsStatus && notificationsStatus.count < 3) {
             count = notificationsStatus.count;
         }
-
-        storageManager.set('notificationsStatus', {
-            notificationTime: Date.now(),
-            count: count + 1
-        });
+        // increment the notification count
+        module.exports.scheduler.setNotificationCount(count + 1);
     },
     /**
      * Sets the next step for the sidebar based on our current state.
@@ -168,12 +234,7 @@ exports.scheduler = {
                 module.exports.scheduler.setNotificationStatus(notificationsStatus);
                 module.exports.scheduler.startNotificationTimer(1);
             } else {
-                // reset the notificationsStatus, but do not schedule
-                // another notification
-                storageManager.set('notificationsStatus', {
-                    notificationTime: Date.now(),
-                    count: 1
-                });
+                module.exports.scheduler.resetNotificationStatus();
             }
 
             module.exports.scheduler.setProgress();
