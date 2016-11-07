@@ -1,0 +1,54 @@
+.allaboard-snippet {
+    color: #3c3c3c;
+    margin: 12px auto;
+    font-size: .9rem;
+    width: 470px;
+    text-align: left;
+}
+
+.allaboard-snippet p {
+    margin: 0;
+}
+
+.allaboard-snippet .snippet-image {
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: top;
+}
+
+.allaboard-snippet .mobile {
+    margin-top: 8px;
+}
+
+.allaboard-snippet .snippet-content {
+    display: inline-block;
+    width: 390px;
+    font-size: .8rem;
+    vertical-align: top;
+}
+
+.allaboard-snippet a:link,
+.allaboard-snippet a:visited {
+    color: #0073aa;
+    text-decoration: underline;
+}
+
+.allaboard-snippet a:link {
+    text-decoration: none;
+}
+
+.allaboard-snippet button {
+    background-color: #0095dd;
+    color: #fff;
+    margin-top: 5px;
+    padding: 2px 7px;
+    border: 0;
+    border-radius: 4px;
+    line-height: 2;
+    cursor: pointer;
+}
+
+.allaboard-snippet button:active {
+    position: relative;
+    top: 1px;
+}
