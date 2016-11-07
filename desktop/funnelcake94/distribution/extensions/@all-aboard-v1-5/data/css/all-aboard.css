@@ -1,0 +1,209 @@
+@import 'fonts.css';
+@import 'gradients.css';
+@import 'buttons.css';
+@import 'footer.css';
+
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    background-color: #f6f6f6;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 16px;
+}
+
+a:link,
+a:visited {
+    color: #0073aa;
+}
+
+a:hover,
+a:focus {
+    text-decoration: none;
+}
+
+svg {
+    position: absolute;
+    width: 320px;
+}
+
+svg .star-color-white {
+    fill: #fff;
+}
+
+svg .star-color-lavendar {
+    fill: #9a98fe;
+}
+
+svg .star-opacity-50 {
+    opacity: .5;
+}
+
+svg .star-opacity-20 {
+    opacity: .2;
+}
+
+.sidebar-content {
+    padding: 80px 0 0;
+    width: 320px;
+    height: 100vh;
+    text-align: center;
+}
+
+.reward {
+    padding-top: 40px;
+}
+
+.sidebar-content h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.sidebar-content p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+.sidebar-content main {
+    position: relative;
+    padding: 10px 20px 0;
+    z-index: 2;
+}
+
+/* mobile download buttons */
+.app-store,
+.play-store {
+    display: block;
+}
+
+.app-store {
+    margin-top: 50px;
+}
+
+.play-store {
+    margin-top: 20px;
+}
+
+.selfpaced-content {
+    padding: 0 10px;
+}
+
+.selfpaced-content h2:before {
+    display: block;
+    content: '';
+    background: transparent url('../media/progress/star-active.svg') 0 0 no-repeat;
+    margin: 0 auto 20px;
+    width: 35px;
+    height: 35px;
+}
+
+.selfpaced-content h2 {
+    margin-bottom: 30px;
+}
+
+.selfpaced-content p {
+    font-size: 1rem;
+}
+
+.user-data {
+    text-align: left;
+}
+
+.user-data li {
+    overflow: hidden;
+    line-height: 1;
+    padding: 10px;
+    margin: 0;
+}
+
+.user-data li:hover {
+    background-color: #e8e8e8;
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.reward h1:before {
+    display: block;
+    content: '';
+    background: transparent url('../media/sidebar/reward-header.svg') 0 0 no-repeat;
+    background-size: 100%;
+    margin: 0 auto 20px;
+    width: 140px;
+    height: 35px;
+}
+
+.reward-form {
+    border: 0;
+    width: 100%;
+    height: 240px;
+}
+
+.small-print {
+    font-size: .75rem;
+    text-align: left;
+}
+
+/* tokens */
+.tokens {
+    margin: 210px 40px 0;
+    padding: 0;
+    width: 240px;
+    list-style: none;
+}
+
+.tokens li {
+    display: inline-block;
+    margin-left: 5px;
+    width: 30px;
+    height: 30px;
+}
+
+.tokens li:first-child {
+    margin: 0;
+}
+
+.tokens li input[type="image"] {
+    cursor: default;
+}
+
+.tokens li.active input[type="image"] {
+    cursor: pointer;
+}
+
+.token-awarded {
+    font-size: .825rem;
+}
+
+/* Utility class for hiding elements that should fade in */
+.hide {
+    height: 0;
+    opacity: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Hide visually, but not to screen readers */
+.visually-hidden {
+    position: absolute!important;
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    padding: 0;
+    border: 0;
+}

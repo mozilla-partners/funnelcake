@@ -1,0 +1,8 @@
+{
+    "afterInteractionCloseTime": 5000,
+    "defaultSidebarInterval": 10,
+    "defaultSidebarCloseTime": 7000,
+    "timeElapsedFormula": 1000,
+    "nonuseDestroyTime": 120000,
+    "waitInterval": 10000
+}
