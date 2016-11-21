@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 
 Name: install.rdf
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: ZqAb18xKujJDexSIv4qH1g==
-SHA1-Digest: mK8jV/etJgwvefbj0NzJMhI/dos=
+MD5-Digest: jmg2ThpgREn6BxOeQwaB/g==
+SHA1-Digest: P7jqFDVxO6gWI2i/rDNZoguPH8I=
 
 Name: .jpmignore
 Digest-Algorithms: MD5 SHA1
@@ -22,8 +22,8 @@ SHA1-Digest: 7SIzosrIIIN6aKTVJE01bjwA0ps=
 
 Name: package.json
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: tAOx2lv7nPyOHZV4qclAYw==
-SHA1-Digest: Q3vw2eOUWNoPEG8PIgGqaeLcsfY=
+MD5-Digest: LyCg/oP66iN2Ml2P2mMOpw==
+SHA1-Digest: tnc+deoLAfqr6vaV9Ypcw4fpcP4=
 
 Name: data/css/about-home.css
 Digest-Algorithms: MD5 SHA1
@@ -57,8 +57,8 @@ SHA1-Digest: TGZHsI4vOagN0v817m46JiUyf9U=
 
 Name: data/css/footer.css
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: z/goqP6sRcOmRtiYyY56xQ==
-SHA1-Digest: cNEj7YuwQpAmOQHRMHlwjNTTlvo=
+MD5-Digest: pNfyZkhv8n/9ziygRRiz9A==
+SHA1-Digest: FG478r5kJVhLqejgXJiZ5URdbNs=
 
 Name: data/css/gradients.css
 Digest-Algorithms: MD5 SHA1
@@ -322,8 +322,8 @@ SHA1-Digest: 9N8dRS2XycQRfDNLRQQcZUbNf84=
 
 Name: data/tmpl/sidebars/reward.html
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: VqpLKPZgqH504iMpeQl1qg==
-SHA1-Digest: ZXqTeP2sg8JIOJvQHirVwlZZuNU=
+MD5-Digest: p8cmY3Y71Ylpu7EYSLvwcg==
+SHA1-Digest: NgflQbBXzQSAO0SQ2OWA1+fmywg=
 
 Name: data/tmpl/snippets/content1-snippet.html
 Digest-Algorithms: MD5 SHA1
