@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 
 Name: install.rdf
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: jmg2ThpgREn6BxOeQwaB/g==
-SHA1-Digest: P7jqFDVxO6gWI2i/rDNZoguPH8I=
+MD5-Digest: sUH+izofoW8wvHeJ2Pl9Qg==
+SHA1-Digest: Sp9fgJzThdjfVxelhpD+ATn4sDU=
 
 Name: .jpmignore
 Digest-Algorithms: MD5 SHA1
@@ -22,8 +22,8 @@ SHA1-Digest: 7SIzosrIIIN6aKTVJE01bjwA0ps=
 
 Name: package.json
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: LyCg/oP66iN2Ml2P2mMOpw==
-SHA1-Digest: tnc+deoLAfqr6vaV9Ypcw4fpcP4=
+MD5-Digest: O8+AOOY8EO+msVCJgsocHQ==
+SHA1-Digest: w+XKwAh+/+SDXIpCp3wkOaM4YLc=
 
 Name: data/css/about-home.css
 Digest-Algorithms: MD5 SHA1
@@ -322,8 +322,8 @@ SHA1-Digest: 9N8dRS2XycQRfDNLRQQcZUbNf84=
 
 Name: data/tmpl/sidebars/reward.html
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: p8cmY3Y71Ylpu7EYSLvwcg==
-SHA1-Digest: NgflQbBXzQSAO0SQ2OWA1+fmywg=
+MD5-Digest: a7RKVawe57w83j41IVMBaQ==
+SHA1-Digest: JvbZoggI3rrGyKjRM7x+dXw9FE4=
 
 Name: data/tmpl/snippets/content1-snippet.html
 Digest-Algorithms: MD5 SHA1
