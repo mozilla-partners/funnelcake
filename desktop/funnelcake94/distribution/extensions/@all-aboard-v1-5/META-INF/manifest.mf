@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 
 Name: install.rdf
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: sUH+izofoW8wvHeJ2Pl9Qg==
-SHA1-Digest: Sp9fgJzThdjfVxelhpD+ATn4sDU=
+MD5-Digest: +U8x1kMiUO3gUoDj59UkxA==
+SHA1-Digest: ZGqI1pEBMOluu6xqoCEpggl4Lbo=
 
 Name: .jpmignore
 Digest-Algorithms: MD5 SHA1
@@ -22,8 +22,8 @@ SHA1-Digest: 7SIzosrIIIN6aKTVJE01bjwA0ps=
 
 Name: package.json
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: O8+AOOY8EO+msVCJgsocHQ==
-SHA1-Digest: w+XKwAh+/+SDXIpCp3wkOaM4YLc=
+MD5-Digest: 7zCy7ChO6L0MIuLDAJXu2Q==
+SHA1-Digest: 438Syl/gIwb2foqfI+I8YpkNINA=
 
 Name: data/css/about-home.css
 Digest-Algorithms: MD5 SHA1
@@ -37,13 +37,13 @@ SHA1-Digest: IapKHW725OJhortqPP/WV89wypA=
 
 Name: data/css/all-aboard.css
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: slcJJ05UWogiaM64+byXnA==
-SHA1-Digest: AurmKpqeA+iaLzkgWv4gfkLxShQ=
+MD5-Digest: 1CLGmo0ZCfhYWCg3cqJr+g==
+SHA1-Digest: W6JvCA3OKBEc0yXWSmSFRIUA0bY=
 
 Name: data/css/buttons.css
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: 4121ZK7Ez0otGbj7igi3vQ==
-SHA1-Digest: YTDAxHLGdgTnYb1u7N1FJWcRBGA=
+MD5-Digest: aIE3Jzai2ZuXNvRR7p0WTA==
+SHA1-Digest: 3dyI7Dgf0Z55VhaODYMSsHQnoWA=
 
 Name: data/css/firstrun.css
 Digest-Algorithms: MD5 SHA1
@@ -377,8 +377,8 @@ SHA1-Digest: UdJE3t/m18DdZknhcCmph/Rt06E=
 
 Name: lib/sidebar-utils.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: vs8ebj7ZsJ20tyZQLeaRFQ==
-SHA1-Digest: zO8+ufQRuUUjRo6jFHqp6PPkm2c=
+MD5-Digest: B3UiusCQFMq7LyLs0LwxJA==
+SHA1-Digest: GFO7E/N7FqRnnt3lxA89lJ56LtU=
 
 Name: lib/storage-manager.js
 Digest-Algorithms: MD5 SHA1
