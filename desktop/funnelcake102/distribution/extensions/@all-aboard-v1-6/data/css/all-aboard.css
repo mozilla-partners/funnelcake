@@ -1,0 +1,295 @@
+@import 'fonts.css';
+
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    background-color: #f6f6f6;
+    color: #4a5160;
+    margin: 0;
+    padding: 0;
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 16px;
+}
+
+header {
+    padding-top: 10px;
+}
+
+a:link,
+a:visited {
+    color: #fff;
+}
+
+a:hover,
+a:focus {
+    text-decoration: none;
+}
+
+.sidebar-content {
+    width: 320px;
+    height: 100vh;
+    text-align: center;
+}
+
+/* sidebar background colors per track */
+.utility.content1 {
+    background-color: #243569;
+    color: #fff;
+}
+
+.utility.content2 {
+    background-color: #51174E;
+    color: #fff;
+}
+
+.utility.content3 {
+    background-color: #159565;
+    color: #fff;
+}
+
+.utility.content4 {
+    background-color: #127AB6;
+    color: #fff;
+}
+
+.values.content1 {
+    background-color: #243569;
+    color: #fff;
+}
+
+.values.content2 {
+    background-color: #51174E;
+    color: #fff;
+}
+
+.values.content3 {
+    background-color: #127AB6;
+    color: #fff;
+}
+
+.values.content4 {
+    background-color: #159565;
+    color: #fff;
+}
+
+.sidebar-content h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.sidebar-content p {
+    line-height: 1.5;
+}
+
+.sidebar-content header,
+.sidebar-content main,
+.sidebar-content footer {
+    padding: 10px 20px 0 20px;
+}
+
+.sidebar-content header img {
+    display: block;
+    margin: 0 auto 40px;
+}
+
+.sidebar-content footer {
+    padding-top: 20px;
+    text-align: center;
+}
+
+.secondary-content {
+    margin: 40px auto 0;
+    width: 240px;
+    height: auto;
+    text-align: left;
+    font-style: italic;
+    opacity: 1;
+    transition: height 1s,
+                opacity 1s;
+}
+
+/* when using .hide the container is collapsed but, the content
+   inside it still occupies it's physical space, though hidden.
+   We therefore need to explicitly set the content to display:none */
+.secondary-content.hide p {
+    display: none;
+    padding: 0;
+}
+
+.user-data {
+    text-align: left;
+}
+
+.user-data li {
+    overflow: hidden;
+    line-height: 1;
+    padding: 10px;
+    margin: 0;
+}
+
+.user-data li:hover {
+    background-color: #e8e8e8;
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.hostname {
+    font-size: .9rem;
+}
+
+/* styles for multiple choice sidebars */
+.options {
+    padding: 0;
+    list-style: none;
+    text-align: left;
+}
+
+.options label {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.options label span {
+    display: inline-block;
+    margin-left: 10px;
+    max-width: 200px;
+    vertical-align: middle;
+    line-height: 1.2;
+}
+
+.options .answer {
+    font-weight: bold;
+}
+
+.moving-truck {
+    margin-top: 20px;
+}
+
+.small-print {
+    font-size: .75rem;
+    text-align: left;
+}
+
+/* tokens */
+.tokens {
+    margin: 0 0 10px;
+    padding: 0;
+    width: 240px;
+    list-style: none;
+}
+
+.tokens li {
+    display: inline-block;
+    margin-left: 20px;
+    width: 30px;
+    height: 30px;
+}
+
+.tokens li input[type="image"] {
+    cursor: default;
+}
+
+.tokens li.active input[type="image"] {
+    cursor: pointer;
+}
+
+.token-awarded {
+    font-size: .825rem;
+    text-align: center;
+}
+
+/* buttons */
+.button {
+    position: relative;
+    display: inline-block;
+    background-color: transparent;;
+    color: #fff;
+    margin-top: 15px;
+    padding: 15px 26px;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 300;
+    text-align: center;
+    width: 85%;
+    cursor: pointer;
+    transition: background-color .1s ease-in-out;
+}
+
+.button.small {
+    padding: 5px 18px;
+    width: 200px;
+    font-size: .9rem;
+}
+
+.button.reset {
+    margin-bottom: 10px;
+}
+
+.mobile img {
+    margin: 5px;
+}
+
+.reset {
+    background: none;
+    color: #333;
+    border: 0;
+}
+
+/* customization sidebar styles */
+.button-container button {
+    margin-bottom: 20px;
+}
+
+.button-container button:last-child {
+    margin: 0;
+}
+
+.button:hover,
+.button:focus {
+    background-color: #fff;
+    color: #333;
+}
+
+.button:active {
+    position: relative;
+    top: 1px;
+}
+
+.reset:hover,
+.reset:focus {
+    background: none;
+    border: 0;
+}
+
+/* utility */
+.hidden {
+    display: none;
+}
+
+/* Utility class for hiding elements that should fade in */
+.hide {
+    height: 0;
+    opacity: 0;
+}
+
+/* Hide visually, but not to screen readers */
+.visually-hidden {
+    position: absolute!important;
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    padding: 0;
+    border: 0;
+}
