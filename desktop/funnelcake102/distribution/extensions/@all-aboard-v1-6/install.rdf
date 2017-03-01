@@ -5,7 +5,7 @@
           <em:type>2</em:type>
           <em:bootstrap>true</em:bootstrap>
           <em:unpack>false</em:unpack>
-          <em:version>1.6.3</em:version>
+          <em:version>1.6.4</em:version>
           <em:name>Firefox All Aboard 1.6</em:name>
           <em:description>The Mozilla Firefox Educational Tool</em:description>
           <em:creator>Mozilla Corporation</em:creator>
@@ -23,7 +23,7 @@
             <Description>
                 <em:locale>de</em:locale>
                 <em:name>Firefox All Aboard 1.6</em:name>
-                <em:description>TBD</em:description>
+                <em:description>Tool für die Einführung in Mozilla Firefox</em:description>
                 <em:creator>Mozilla Corporation</em:creator>
                 <em:homepageURL>https://github.com/mozilla/all-aboard</em:homepageURL>
 
