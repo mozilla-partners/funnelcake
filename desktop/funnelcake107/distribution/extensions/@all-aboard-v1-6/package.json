@@ -1,0 +1,36 @@
+{
+  "title": "Firefox All Aboard 1.6",
+  "name": "all-aboard-v1-6",
+  "version": "1.6.4",
+  "description": "The Mozilla Firefox Educational Tool",
+  "homepage": "https://github.com/mozilla/all-aboard",
+  "repository": "https://github.com/mozilla/all-aboard",
+  "locales": {
+      "de": {
+          "description": "Tool für die Einführung in Mozilla Firefox"
+      }
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "jpm test",
+    "test-travis": "jpm --binary `which firefox` test -v",
+    "build-xpi": "jpm xpi",
+    "lint": "./node_modules/.bin/eslint index.js lib/** data/js/** test/**"
+  },
+  "author": "Mozilla Corporation",
+  "engines": {
+    "firefox": ">=47.0"
+  },
+  "license": "MPL-2.0",
+  "keywords": [
+    "jetpack",
+    "javascript",
+    "css",
+    "html",
+    "l10n"
+  ],
+  "devDependencies": {
+    "eslint": "^3.5.0",
+    "jpm": "^1.0.7"
+  }
+}
