@@ -1,0 +1,22 @@
+<section id="all-aboard" class="dialog">
+  <header>
+    <h2>%firstrun_main_title</h2>
+    <div id="yup_nope" class="form-elements">
+      <label for="yup">
+        <input type="radio" name="isOnBoarding" value="existing" id="yup" />%firstrun_yes
+      </label>
+      <label for="nope">
+        <input type="radio" name="isOnBoarding" value="new" id="nope" />%firstrun_no
+      </label>
+    </div>
+  </header>
+  <main class="what-matters hidden" aria-hidden="true">
+    <h2>%firstrun_question2</h2>
+    %option_one
+    %option_two
+  </main>
+  <footer>
+    <button type="button" class="button hidden" aria-hidden="true">%firstrun_cta</button>
+  </footer>
+</section>
+<a href="about:home" id="dismiss" class="no-thanks">%dismiss_msg</a>
