@@ -1,7 +1,7 @@
 {
   "title": "Firefox OnBoard",
   "name": "onboard-v1",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "The Mozilla Firefox Onboarding Experiment",
   "homepage": "https://github.com/mozilla/onaboard",
   "repository": "https://github.com/mozilla/onaboard",

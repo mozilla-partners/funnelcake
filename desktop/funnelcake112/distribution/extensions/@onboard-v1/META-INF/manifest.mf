@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 
 Name: install.rdf
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: HlFuXvDkYkzfCsJfVSu+jw==
-SHA1-Digest: DtAmWRF5GIYOrUAJ1VtAGYv43ec=
+MD5-Digest: DhTYlmsq3hP32Au0x1akZw==
+SHA1-Digest: 6rU31AwDIrHltX8KzATLbCbUO5w=
 
 Name: .jpmignore
 Digest-Algorithms: MD5 SHA1
@@ -17,13 +17,13 @@ SHA1-Digest: hBvzrYsRacNpTOCOH+GOhYBn2mE=
 
 Name: index.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: QcKTGlOmAGvWaCAisdmGpQ==
-SHA1-Digest: h5ppngCsoXKyNpOohUVoG1L25DY=
+MD5-Digest: 69Fh4AHYDuYVNbI5/67k2g==
+SHA1-Digest: xxLmFNAwh8CwuMiHCkbBg3G3cA8=
 
 Name: package.json
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: ggNN4+V/fySpxojOckRdZQ==
-SHA1-Digest: TiwEnznLosH2by9dOBdQCf79+Pk=
+MD5-Digest: rRxCnVEm6mRMXipw+ITfEA==
+SHA1-Digest: LOJYQGmqX7Nw0tzK6hXg6HGkCQ8=
 
 Name: data/css/about-newtab.css
 Digest-Algorithms: MD5 SHA1
@@ -87,8 +87,8 @@ SHA1-Digest: n8OrqSjw0s1U5VvNxBLeaI+8uNE=
 
 Name: lib/ga-utils.js
 Digest-Algorithms: MD5 SHA1
-MD5-Digest: nAVgMEJ2vRtzomH3jctphg==
-SHA1-Digest: 5yGE31H6PnF/KLgjzKRYqgHcWQo=
+MD5-Digest: Dy3VKtf6hlhUZjD4SPv84A==
+SHA1-Digest: f3FES+NCt4/WkeIy5CCDeEse/d8=
 
 Name: lib/intervals.js
 Digest-Algorithms: MD5 SHA1

@@ -19,8 +19,8 @@ exports.gaUtils = {
         let variation = storageManager.get('variation');
 
         return {
-            step: step + 1,
-            variation: variation,
+            step: 'Step' + (step + 1),
+            contentVariation: variation,
             topic: variations[variation][step]
         };
     },
@@ -43,6 +43,7 @@ exports.gaUtils = {
      */
     post: function(label, step) {
         let eventData = module.exports.gaUtils.getEventData(step);
+
         let gaRequest = Request({
             url: 'https://www.google-analytics.com/collect',
             content: {
@@ -52,13 +53,10 @@ exports.gaUtils = {
                 ea: eventData.step,
                 el: label,
                 cid: '35009a79-1a05-49d7-b876-2b884d0f825b',
-                cd3: eventData.varation,
+                cd3: eventData.contentVariation,
                 cd4: eventData.topic,
                 cd5: module.exports.gaUtils.impressionCount(),
                 tid: 'UA-36116321-22'
-            },
-            onComplete: function(response) {
-                console.error('Response from GA', response.status);
             }
         });
 
