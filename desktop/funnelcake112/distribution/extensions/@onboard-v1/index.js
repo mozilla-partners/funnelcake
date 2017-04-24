@@ -29,6 +29,7 @@ exports.onUnload = function(reason) {
 */
 exports.main = function() {
     let activeTabURL = tabs.activeTab.url;
+    let clientId = storageManager.get('clientId');
     let detroyAddon = storageManager.get('destroyAddon');
     let durationTimerStartTime = storageManager.get('durationTimerStartTime');
     let intervalTimerStartTime = storageManager.get('intervalTimerStartTime');
@@ -44,7 +45,20 @@ exports.main = function() {
         return;
     }
 
+    /*
+     * if the clientId is not set, this is the first session
+     * generate and store for future use
+     */
+    if (typeof clientId === 'undefined') {
+        // Convert clientId to a string for GA
+        let clientId = Math.random() + '';
+        // Strip of the leading 0. and store
+        storageManager.set('clientId', clientId.substr(2));
+    }
+
     storageManager.set('variation', variation);
+
+    gaUtils.sendStartupGAPing();
 
     // if installTime is undefined, this is the first launch of Firefox
     if (typeof installTime === 'undefined') {
