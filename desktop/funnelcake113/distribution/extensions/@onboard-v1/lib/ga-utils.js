@@ -1,10 +1,14 @@
 'use strict';
 
+let prefService = require('sdk/preferences/service');
 let Request = require('sdk/request').Request;
 let timers = require('sdk/timers');
 
 let { storageManager } = require('./storage-manager.js');
 let { variations } = require('./variations.js');
+
+const hitType = 'event';
+const trackingId = 'UA-36116321-22';
 
 exports.gaUtils = {
     /**
@@ -48,15 +52,16 @@ exports.gaUtils = {
             url: 'https://www.google-analytics.com/collect',
             content: {
                 v: 1,
-                t: 'event',
+                t: hitType,
                 ec: 'Addon Interactions',
                 ea: eventData.step,
                 el: label,
-                cid: '35009a79-1a05-49d7-b876-2b884d0f825b',
+                cid: storageManager.get('clientId'),
                 cd3: eventData.contentVariation,
                 cd4: eventData.topic,
                 cd5: module.exports.gaUtils.impressionCount(),
-                tid: 'UA-36116321-22'
+                cd8: prefService.get('onboard.environment') || 'test',
+                tid: trackingId
             }
         });
 
@@ -65,5 +70,25 @@ exports.gaUtils = {
         timers.setTimeout(function() {
             gaRequest.post();
         }, 5000);
+    },
+    /**
+     * Send a ping to GA on each startup of the browser
+     */
+    sendStartupGAPing: function() {
+        let gaRequest = Request({
+            url: 'https://www.google-analytics.com/collect',
+            content: {
+                v: 1,
+                t: hitType,
+                ec: 'Firefox Interactions',
+                ea: 'Start Browser',
+                cid: storageManager.get('clientId'),
+                cd3: storageManager.get('variation'),
+                cd8: prefService.get('onboard.environment') || 'test',
+                tid: trackingId
+            }
+        });
+
+        gaRequest.post();
     }
 };
