@@ -1,0 +1,1 @@
+This directory is the home for the source of extensions that are shipped as part of a funnelcake.

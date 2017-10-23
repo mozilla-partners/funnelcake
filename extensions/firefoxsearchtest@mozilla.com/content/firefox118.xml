@@ -1,0 +1,23 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/">
+<ShortName>Firefox Search</ShortName>
+<Description>Firefox Search</Description>
+<InputEncoding>UTF-8</InputEncoding>
+<Image width="16" height="16">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMFSURBVDhPrZNrTM1xGMf/LJeWE0ro3HJOfv+aZkbqVC90UTQ6uk6drGJdTiRrJyqxtIapXFaspTBm4bh0WlJjzdEqYrNuo4su51SnhsRMMav/1+/o/4Lhne/2ffV7Pt89z/Pbw/x37W0YkezRm0rj9GMjsY/fcrFP3nNx+rdGdf1Q0Y6ql0K+7E+N5snDQsv1Cd4X9JOkuAGKiib41o4isP49PGpM8NF2ovxZ18eb2uJsWj5nluLVrbJf1hMvncnOSJ9R52pws1yJ0MIMiG68hkxnxCJtHyTFLUimoYODD/FCl1DHo7OqDpds6VYRDKexMOWthqF4FRRZBRCdrcK8yx2wLGvHkvxmrDtchU/jTfg8XIixpwIljzNMY4y4aCiRYOgADchhYTghR1eaD87npsA2vxF2OfVYefAB7BOvo6z6HjB+CsMtzBkeZ5iOWJnJEMfCmMJiJJPF2DlHHE8MAZumhVhzH3bJtyFQXcTC4NO4U3MZ3IcSdFbLTTzOMK1RoumBXQSGJBadUSxyAt2xNlIDq+gyWKlKMV9ZiAUBuVigSMX3T9fBTRxBVakXd+wYM/dnQONW8UxvBMEg7eK5nxMqVB5Y4ZMCcVA6tiYkwtb/EAQb1HDYqMLX7s2YNrJ4VSGc/AmbVektbe/cTtAXSfCGLtOgZjGgcYYhi0VdvBOUIaFY6hyFnEwvTDULMdmyBG159jU8zjBXFfLMlk0Er5UE/TSgP4bgir8LIpzcIJVvg518B+QyX7y65oiJuyL0nJThVgg5yuMMkyIU2lavl7574c2HRNFxdrPQhblgn6cbCre5YjibxXi+I4yHCHRBDtyjoIXePD6rInbVzlpnKWfuxDyOeSf90ea90O9NIhhJpaMlELQFi7iGAMlpHvtN1mobm4IK4vCtUUHwcjMNCiLoCiboCSfoCCHQuou5/ULrclr715uwoF4jZyyyNDaC1ksy6ZTOScxVugi5MiL+cpIs7w1dLCihNZ7UlmbgXzI/Sqhdqf2oA6g9qB2pBdS/HBLD/AAMLYzGrFLmEgAAAABJRU5ErkJggg==</Image>
+<Url type="application/x-suggestions+json" method="GET"
+     template="https://search.yahoo.com/sugg/ff">
+  <Param name="output"  value="fxjson" />
+  <Param name="appid"   value="ffd" />
+  <Param name="command" value="{searchTerms}" />
+</Url>
+<Url type="text/html" method="GET" template="https://search.yahoo.com/yhs/search"
+     resultdomain="yahoo.com" rel="searchform">
+  <Param name="p" value="{searchTerms}"/>
+  <Param name="ei" value="UTF-8"/>
+  <Param name="hspart" value="mozilla"/>
+  <Param name="hsimp" value="yhs-021"/>
+</Url>
+</SearchPlugin>
